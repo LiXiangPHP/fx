@@ -24,12 +24,10 @@
       <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox">
       <a href="javascript:listTable.sort('user_id'); "><?php echo $this->_var['lang']['record_id']; ?></a><?php echo $this->_var['sort_user_id']; ?>
     </th>
-    <th><a href="javascript:listTable.sort('user_name'); "><?php echo $this->_var['lang']['username']; ?></a><?php echo $this->_var['sort_user_name']; ?></th>
-    <th><a href="javascript:listTable.sort('email'); "><?php echo $this->_var['lang']['email']; ?></a><?php echo $this->_var['sort_email']; ?></th>
+    <th><a href="javascript:listTable.sort('user_name'); ">手机号</a><?php echo $this->_var['sort_user_name']; ?></th>
     <th><a href="javascript:listTable.sort('is_validated'); "><?php echo $this->_var['lang']['is_validated']; ?></a><?php echo $this->_var['sort_is_validate']; ?></th>
     <th><?php echo $this->_var['lang']['user_money']; ?></th>
     <th><?php echo $this->_var['lang']['frozen_money']; ?></th>
-    <th><?php echo $this->_var['lang']['rank_points']; ?></th>
     <th><?php echo $this->_var['lang']['pay_points']; ?></th>
     <th><a href="javascript:listTable.sort('reg_time'); "><?php echo $this->_var['lang']['reg_date']; ?></a><?php echo $this->_var['sort_reg_time']; ?></th>
     <th><?php echo $this->_var['lang']['handler']; ?></th>
@@ -40,11 +38,9 @@
   <tr>
     <td><input type="checkbox" name="checkboxes[]" value="<?php echo $this->_var['user']['user_id']; ?>" notice="<?php if ($this->_var['user']['user_money'] != 0): ?>1<?php else: ?>0<?php endif; ?>"/><?php echo $this->_var['user']['user_id']; ?></td>
     <td class="first-cell"><?php echo htmlspecialchars($this->_var['user']['user_name']); ?></td>
-    <td><span onclick="listTable.edit(this, 'edit_email', <?php echo $this->_var['user']['user_id']; ?>)"><?php echo $this->_var['user']['email']; ?></span></td>
     <td align="center"><?php if ($this->_var['user']['is_validated']): ?> <img src="images/yes.gif"> <?php else: ?> <img src="images/no.gif"> <?php endif; ?></td>
     <td><?php echo $this->_var['user']['user_money']; ?></td>
     <td><?php echo $this->_var['user']['frozen_money']; ?></td>
-    <td><?php echo $this->_var['user']['rank_points']; ?></td>
     <td><?php echo $this->_var['user']['pay_points']; ?></td>
     <td align="center"><?php echo $this->_var['user']['reg_time']; ?></td>
     <td align="center">

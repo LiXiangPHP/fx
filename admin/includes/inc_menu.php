@@ -86,10 +86,17 @@ $modules['07_content']['article_auto']              = 'article_auto.php?act=list
 $modules['08_members']['03_users_list']             = 'users.php?act=list';
 $modules['08_members']['04_users_add']              = 'users.php?act=add';
 $modules['08_members']['05_user_rank_list']         = 'user_rank.php?act=list';
-$modules['08_members']['06_list_integrate']         = 'integrate.php?act=list';
+// $modules['08_members']['06_list_integrate']         = 'integrate.php?act=list';
 $modules['08_members']['08_unreply_msg']            = 'user_msg.php?act=list_all';
 $modules['08_members']['09_user_account']           = 'user_account.php?act=list';
 $modules['08_members']['10_user_account_manage']    = 'user_account_manage.php?act=list';
+/*商户管理*/
+$modules['09_shop']['02_shop_list']             = 'users.php?act=list&usertype=6';
+$modules['09_shop']['03_shop_account']             = 'shop.php';
+$modules['09_shop']['04_shop_loan']             = 'shop.php';
+$modules['09_shop']['05_shop_order']             = 'shop.php';
+
+
 
 $modules['10_priv_admin']['admin_logs']             = 'admin_logs.php?act=list';
 $modules['10_priv_admin']['admin_list']             = 'privilege.php?act=list';
@@ -138,8 +145,8 @@ $modules['14_sms']['03_sms_send']                   = 'sms.php?act=display_send_
 //$modules['14_sms']['05_sms_send_history']           = 'sms.php?act=display_send_history_ui';
 //$modules['14_sms']['06_sms_charge_history']         = 'sms.php?act=display_charge_history_ui';
 
-// $modules['15_rec']['affiliate']                     = 'affiliate.php?act=list';
-// $modules['15_rec']['affiliate_ck']                  = 'affiliate_ck.php?act=list';
+$modules['15_rec']['affiliate']                     = 'affiliate.php?act=list';
+$modules['15_rec']['affiliate_ck']                  = 'affiliate_ck.php?act=list';
 
 $modules['16_email_manage']['email_list']           = 'email_list.php?act=list';
 $modules['16_email_manage']['magazine_list']        = 'magazine_list.php?act=list';

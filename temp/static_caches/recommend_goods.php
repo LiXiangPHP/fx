@@ -62,22 +62,22 @@ $data = array (
     ),
     2 => 
     array (
-      'goods_id' => '7',
+      'goods_id' => '150',
       'sort_order' => '100',
     ),
     3 => 
     array (
-      'goods_id' => '150',
+      'goods_id' => '7',
       'sort_order' => '100',
     ),
     4 => 
     array (
-      'goods_id' => '16',
+      'goods_id' => '14',
       'sort_order' => '100',
     ),
     5 => 
     array (
-      'goods_id' => '14',
+      'goods_id' => '16',
       'sort_order' => '100',
     ),
     6 => 

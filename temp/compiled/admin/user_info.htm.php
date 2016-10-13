@@ -4,7 +4,7 @@
 <form method="post" action="users.php" name="theForm" onsubmit="return validate()">
 <table width="100%" >
   <tr>
-    <td class="label"><?php echo $this->_var['lang']['username']; ?>:</td>
+    <td class="label">手机号:</td>
     <td><?php if ($this->_var['form_action'] == "update"): ?><?php echo $this->_var['user']['user_name']; ?><input type="hidden" name="username" value="<?php echo $this->_var['user']['user_name']; ?>" /><?php else: ?><input type="text" name="username" maxlength="60" value="<?php echo $this->_var['user']['user_name']; ?>" /><?php echo $this->_var['lang']['require_field']; ?><?php endif; ?></td>
   </tr>
   <?php if ($this->_var['form_action'] == "update"): ?>
@@ -26,10 +26,7 @@
         <span class="notice-span" <?php if ($this->_var['help_open']): ?>style="display:block" <?php else: ?> style="display:none" <?php endif; ?> id="noticePayPoints"><?php echo $this->_var['lang']['notice_pay_points']; ?></span></td>
   </tr>
   <?php endif; ?>
-  <tr>
-    <td class="label"><?php echo $this->_var['lang']['email']; ?>:</td>
-    <td><input type="text" name="email" maxlength="60" size="40" value="<?php echo $this->_var['user']['email']; ?>" /><?php echo $this->_var['lang']['require_field']; ?></td>
-  </tr>
+
   <?php if ($this->_var['form_action'] == "insert"): ?>
   <tr>
     <td class="label"><?php echo $this->_var['lang']['password']; ?>:</td>
@@ -46,6 +43,7 @@
   </tr>
   <tr>
     <td class="label"><?php echo $this->_var['lang']['confirm_password']; ?>:</td>
+
     <td><input type="password" name="confirm_password" maxlength="20" size="20" /></td>
   </tr>
   <?php endif; ?>
@@ -64,10 +62,13 @@
     <td class="label"><?php echo $this->_var['lang']['birthday']; ?>:</td>
     <td><?php echo $this->html_select_date(array('field_order'=>'YMD','prefix'=>'birthday','time'=>$this->_var['user']['birthday'],'start_year'=>'-60','end_year'=>'+1','display_days'=>'true','month_format'=>'%m')); ?></td>
   </tr>
-  <tr>
-    <td class="label"><?php echo $this->_var['lang']['credit_line']; ?>:</td>
-    <td><input name="credit_line" type="text" id="credit_line" value="<?php echo $this->_var['user']['credit_line']; ?>" size="10" /></td>
-  </tr>
+
+
+
+
+
+
+
   <?php $_from = $this->_var['extend_info_list']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('', 'field');if (count($_from)):
     foreach ($_from AS $this->_var['field']):
 ?>
@@ -82,6 +83,11 @@
   <tr>
     <td class="label"><?php echo $this->_var['lang']['parent_user']; ?>:</td>
     <td><a href="users.php?act=edit&id=<?php echo $this->_var['user']['parent_id']; ?>"><?php echo $this->_var['user']['parent_username']; ?></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="users.php?act=remove_parent&id=<?php echo $this->_var['user']['user_id']; ?>"><?php echo $this->_var['lang']['parent_remove']; ?></a></td>
+  </tr>
+  <?php else: ?>
+      <tr>
+    <td class="label">推荐人手机号:</td>
+    <td><input type="text" name="pusername" maxlength="60"  /></td>
   </tr>
   <?php endif; ?>
   <?php if ($this->_var['affiliate']['on'] == 1 && $this->_var['affdb']): ?>
@@ -110,6 +116,29 @@
     <?php endforeach; endif; unset($_from); ?><?php $this->pop_vars();; ?>
     </tr>
     </table>
+    </td>
+  </tr>
+  <?php endif; ?>
+  <?php if ($this->_var['user']['usertype'] == 1): ?>
+     <tr>
+    <td class="label">资料图片:</td>
+    <td><?php if ($this->_var['user']['image1']): ?><img src="/<?php echo $this->_var['user']['image1']; ?>" width="100" height="100" border="0" /><?php endif; ?><?php if ($this->_var['user']['image2']): ?><img src="/<?php echo $this->_var['user']['image2']; ?>" width="100" height="100" border="0" /><?php endif; ?><?php if ($this->_var['user']['image3']): ?><img src="/<?php echo $this->_var['user']['image3']; ?>" width="100" height="100" border="0" /><?php endif; ?><?php if ($this->_var['user']['image4']): ?><img src="/<?php echo $this->_var['user']['image4']; ?>" width="100" height="100" border="0" /><?php endif; ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">公司执照:</td>
+    <td><?php if ($this->_var['user']['image5']): ?><img src="/<?php echo $this->_var['user']['image5']; ?>" width="100" height="100" border="0" /><?php endif; ?><?php if ($this->_var['user']['image6']): ?><img src="/<?php echo $this->_var['user']['image6']; ?>" width="100" height="100" border="0" /><?php endif; ?>
+    </td>
+  </tr>
+    <tr>
+    <td class="label">  身份证:</td>
+    <td><?php if ($this->_var['user']['image7']): ?><img src="/<?php echo $this->_var['user']['image7']; ?>" width="100" height="100" border="0" /><?php endif; ?><?php if ($this->_var['user']['image8']): ?><img src="/<?php echo $this->_var['user']['image8']; ?>" width="100" height="100" border="0" /><?php endif; ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">真实姓名:</td>
+    <td>
+   <input type="text" name="username" maxlength="60" value="<?php echo $this->_var['user']['user_name']; ?>" />
     </td>
   </tr>
   <?php endif; ?>
@@ -150,7 +179,6 @@ onload = function()
 function validate()
 {
     validator = new Validator("theForm");
-    validator.isEmail("email", invalid_email, true);
 
     if (document.forms['theForm'].elements['act'].value == "insert")
     {

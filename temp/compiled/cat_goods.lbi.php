@@ -23,17 +23,17 @@ if ($this->_foreach['no']['total'] > 0):
     <div class="centerPadd">
     <div class="clearfix  " style="border:none;" id="show_cat_area<?php echo $this->_var['goods_cat']['id']; ?>">
     <?php endif; ?>
-      <?php $_from = $this->_var['cat_goods']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('', 'goods_0_79660000_1473753474');$this->_foreach['cat_goods'] = array('total' => count($_from), 'iteration' => 0);
+      <?php $_from = $this->_var['cat_goods']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('', 'goods_0_41120000_1476350756');$this->_foreach['cat_goods'] = array('total' => count($_from), 'iteration' => 0);
 if ($this->_foreach['cat_goods']['total'] > 0):
-    foreach ($_from AS $this->_var['goods_0_79660000_1473753474']):
+    foreach ($_from AS $this->_var['goods_0_41120000_1476350756']):
         $this->_foreach['cat_goods']['iteration']++;
 ?>
         <?php if ($this->_foreach['cat_goods']['iteration'] < 9): ?>
       <div class="goodsItem">
-           <a href="<?php echo $this->_var['goods_0_79660000_1473753474']['url']; ?>"><img src="<?php echo $this->_var['goods_0_79660000_1473753474']['thumb']; ?>" alt="<?php echo htmlspecialchars($this->_var['goods_0_79660000_1473753474']['name']); ?>" class="goodsimg" /></a>
+           <a href="<?php echo $this->_var['goods_0_41120000_1476350756']['url']; ?>"><img src="<?php echo $this->_var['goods_0_41120000_1476350756']['thumb']; ?>" alt="<?php echo htmlspecialchars($this->_var['goods_0_41120000_1476350756']['name']); ?>" class="goodsimg" /></a>
            <div>
-           <p class="name"><a href="<?php echo $this->_var['goods_0_79660000_1473753474']['url']; ?>" title="<?php echo htmlspecialchars($this->_var['goods_0_79660000_1473753474']['name']); ?>"><?php echo htmlspecialchars($this->_var['goods_0_79660000_1473753474']['short_name']); ?></a></p>
-            <p><?php if ($this->_var['goods_0_79660000_1473753474']['promote_price'] != ""): ?><font class="snPrice "><?php echo $this->_var['goods_0_79660000_1473753474']['promote_price']; ?></font><?php else: ?><font class="snPrice "><?php echo $this->_var['goods_0_79660000_1473753474']['shop_price']; ?></font>
+           <p class="name"><a href="<?php echo $this->_var['goods_0_41120000_1476350756']['url']; ?>" title="<?php echo htmlspecialchars($this->_var['goods_0_41120000_1476350756']['name']); ?>"><?php echo htmlspecialchars($this->_var['goods_0_41120000_1476350756']['short_name']); ?></a></p>
+            <p><?php if ($this->_var['goods_0_41120000_1476350756']['promote_price'] != ""): ?><font class="snPrice "><?php echo $this->_var['goods_0_41120000_1476350756']['promote_price']; ?></font><?php else: ?><font class="snPrice "><?php echo $this->_var['goods_0_41120000_1476350756']['shop_price']; ?></font>
           <?php endif; ?></p>
            </div>
         </div>

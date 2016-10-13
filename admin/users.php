@@ -24,6 +24,7 @@ require(dirname(__FILE__) . '/includes/init.php');
 if ($_REQUEST['act'] == 'list')
 {
     /* 检查权限 */
+
     admin_priv('users_manage');
     $sql = "SELECT rank_id, rank_name, min_points FROM ".$ecs->table('user_rank')." ORDER BY min_points ASC ";
     $rs = $db->query($sql);
@@ -35,11 +36,11 @@ if ($_REQUEST['act'] == 'list')
     }
 
     $smarty->assign('user_ranks',   $ranks);
-    $smarty->assign('ur_here',      $_LANG['03_users_list']);
-    $smarty->assign('action_link',  array('text' => $_LANG['04_users_add'], 'href'=>'users.php?act=add'));
-
-    $user_list = user_list();
-
+    
+    // $smarty->assign('action_link',  array('text' => $_LANG['04_users_add'], 'href'=>'users.php?act=add'));
+    $usertype = empty($_GET['usertype']) ? 6 : trim($_GET['usertype']);
+    // echo $usertype;die;
+    $user_list = user_list($usertype);
     $smarty->assign('user_list',    $user_list['user_list']);
     $smarty->assign('filter',       $user_list['filter']);
     $smarty->assign('record_count', $user_list['record_count']);
@@ -48,7 +49,18 @@ if ($_REQUEST['act'] == 'list')
     $smarty->assign('sort_user_id', '<img src="images/sort_desc.gif">');
 
     assign_query_info();
-    $smarty->display('users_list.htm');
+    if($usertype == 1)
+    {
+        $smarty->assign('ur_here',      "商户列表");
+        $smarty->display('shop_list.htm');
+    }
+    if($usertype == 6)
+    {
+        $smarty->assign('ur_here',      $_LANG['03_users_list']);
+         $smarty->assign('action_link',  array('text' => $_LANG['04_users_add'], 'href'=>'users.php?act=add'));
+        $smarty->display('users_list.htm');
+       
+    }
 }
 
 /*------------------------------------------------------ */
@@ -105,17 +117,20 @@ elseif ($_REQUEST['act'] == 'insert')
     /* 检查权限 */
     admin_priv('users_manage');
     $username = empty($_POST['username']) ? '' : trim($_POST['username']);
+    $pusername = empty($_POST['pusername']) ? '' : trim($_POST['pusername']);
     $password = empty($_POST['password']) ? '' : trim($_POST['password']);
-    $email = empty($_POST['email']) ? '' : trim($_POST['email']);
     $sex = empty($_POST['sex']) ? 0 : intval($_POST['sex']);
     $sex = in_array($sex, array(0, 1, 2)) ? $sex : 0;
     $birthday = $_POST['birthdayYear'] . '-' .  $_POST['birthdayMonth'] . '-' . $_POST['birthdayDay'];
     $rank = empty($_POST['user_rank']) ? 0 : intval($_POST['user_rank']);
     $credit_line = empty($_POST['credit_line']) ? 0 : floatval($_POST['credit_line']);
+    $sql = 'SELECT user_id FROM ' . $ecs->table('users') . ' WHERE user_name = '.$pusername;
+    $parent_id = $db->getONE($sql);
+
 
     $users =& init_users();
 
-    if (!$users->add_user($username, $password, $email))
+    if (!$users->add_user($username, $password, $parent_id))
     {
         /* 插入会员数据失败 */
         if ($users->error == ERR_INVALID_USERNAME)
@@ -211,7 +226,6 @@ elseif ($_REQUEST['act'] == 'edit')
 {
     /* 检查权限 */
     admin_priv('users_manage');
-
     $sql = "SELECT u.user_name, u.sex, u.birthday, u.pay_points, u.rank_points, u.user_rank , u.user_money, u.frozen_money, u.credit_line, u.parent_id, u2.user_name as parent_username, u.qq, u.msn, u.office_phone, u.home_phone, u.mobile_phone".
         " FROM " .$ecs->table('users'). " u LEFT JOIN " . $ecs->table('users') . " u2 ON u.parent_id = u2.user_id WHERE u.user_id='$_GET[id]'";
 
@@ -221,7 +235,7 @@ elseif ($_REQUEST['act'] == 'edit')
     $user   = $users->get_user_info($row['user_name']);
 
     $sql = "SELECT u.user_id, u.sex, u.birthday, u.pay_points, u.rank_points, u.user_rank , u.user_money, u.frozen_money, u.credit_line, u.parent_id, u2.user_name as parent_username, u.qq, u.msn,
-    u.office_phone, u.home_phone, u.mobile_phone".
+    u.office_phone, u.home_phone, u.mobile_phone,u.user_type,u.image1,u.image2,u.image3,u.image4,u.image5,u.image6,u.image7,u.image8".
         " FROM " .$ecs->table('users'). " u LEFT JOIN " . $ecs->table('users') . " u2 ON u.parent_id = u2.user_id WHERE u.user_id='$_GET[id]'";
 
     $row = $db->GetRow($sql);
@@ -246,6 +260,15 @@ elseif ($_REQUEST['act'] == 'edit')
         $user['office_phone']   = $row['office_phone'];
         $user['home_phone']     = $row['home_phone'];
         $user['mobile_phone']   = $row['mobile_phone'];
+        $user['usertype']   = $row['user_type'];
+        $user['image1']   = $row['image1'];
+        $user['image2']   = $row['image2'];
+        $user['image3']   = $row['image3'];
+        $user['image4']   = $row['image4'];
+        $user['image5']   = $row['image5'];
+        $user['image6']   = $row['image6'];
+        $user['image7']   = $row['image7'];
+        $user['image8']   = $row['image8'];
     }
     else
     {
@@ -324,15 +347,23 @@ elseif ($_REQUEST['act'] == 'edit')
             $smarty->assign('affdb', $affdb);
         }
     }
-
-
+    // print_r($user);die;
     assign_query_info();
     $smarty->assign('ur_here',          $_LANG['users_edit']);
-    $smarty->assign('action_link',      array('text' => $_LANG['03_users_list'], 'href'=>'users.php?act=list&' . list_link_postfix()));
+    if($user['usertype'] == 1)
+    {
+        $smarty->assign('action_link',      array('text' => "商户列表", 'href'=>'users.php?act=list&usertype=6'));
+    }
+    if($user['usertype'] == 6)
+    {
+        $smarty->assign('action_link',      array('text' => $_LANG['03_users_list'], 'href'=>'users.php?act=list&' . list_link_postfix()));
+    }
+    
     $smarty->assign('user',             $user);
     $smarty->assign('form_action',      'update');
     $smarty->assign('special_ranks',    get_rank_list(true));
     $smarty->display('user_info.htm');
+
 }
 
 /*------------------------------------------------------ */
@@ -343,6 +374,10 @@ elseif ($_REQUEST['act'] == 'update')
 {
     /* 检查权限 */
     admin_priv('users_manage');
+    $pusername = empty($_POST['pusername']) ? '' : trim($_POST['pusername']);
+    $sql = 'SELECT user_id FROM ' . $ecs->table('users') . ' WHERE user_name = '.$pusername;
+    $parent_id = $db->getONE($sql);
+
     $username = empty($_POST['username']) ? '' : trim($_POST['username']);
     $password = empty($_POST['password']) ? '' : trim($_POST['password']);
     $email = empty($_POST['email']) ? '' : trim($_POST['email']);
@@ -354,7 +389,7 @@ elseif ($_REQUEST['act'] == 'update')
 
     $users  =& init_users();
 
-    if (!$users->edit_user(array('username'=>$username, 'password'=>$password, 'email'=>$email, 'gender'=>$sex, 'bday'=>$birthday ), 1))
+    if (!$users->edit_user(array('username'=>$username, 'password'=>$password, 'parent_id'=>$parent_id, 'gender'=>$sex, 'bday'=>$birthday ), 1))
     {
         if ($users->error == ERR_EMAIL_EXISTS)
         {
@@ -670,11 +705,9 @@ elseif ($_REQUEST['act'] == 'aff_list')
  *
  * @return void
  */
-function user_list()
+function user_list($usertype = 6)
 {
-    $result = get_filter();
-    if ($result === false)
-    {
+
         /* 过滤条件 */
         $filter['keywords'] = empty($_REQUEST['keywords']) ? '' : trim($_REQUEST['keywords']);
         if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1)
@@ -684,11 +717,11 @@ function user_list()
         $filter['rank'] = empty($_REQUEST['rank']) ? 0 : intval($_REQUEST['rank']);
         $filter['pay_points_gt'] = empty($_REQUEST['pay_points_gt']) ? 0 : intval($_REQUEST['pay_points_gt']);
         $filter['pay_points_lt'] = empty($_REQUEST['pay_points_lt']) ? 0 : intval($_REQUEST['pay_points_lt']);
+        $usertype = empty($_REQUEST['usertype']) ? 6 : intval($_REQUEST['usertype']);
 
         $filter['sort_by']    = empty($_REQUEST['sort_by'])    ? 'user_id' : trim($_REQUEST['sort_by']);
         $filter['sort_order'] = empty($_REQUEST['sort_order']) ? 'DESC'     : trim($_REQUEST['sort_order']);
-
-        $ex_where = ' WHERE 1 ';
+        $ex_where = " WHERE user_type =  $usertype";
         if ($filter['keywords'])
         {
             $ex_where .= " AND user_name LIKE '%" . mysql_like_quote($filter['keywords']) ."%'";
@@ -727,20 +760,14 @@ function user_list()
 
         $filter['keywords'] = stripslashes($filter['keywords']);
         set_filter($filter, $sql);
-    }
-    else
-    {
-        $sql    = $result['sql'];
-        $filter = $result['filter'];
-    }
 
     $user_list = $GLOBALS['db']->getAll($sql);
 
     $count = count($user_list);
-    for ($i=0; $i<$count; $i++)
-    {
-        $user_list[$i]['reg_time'] = local_date($GLOBALS['_CFG']['date_format'], $user_list[$i]['reg_time']);
-    }
+    // for ($i=0; $i<$count; $i++)
+    // {
+    //     $user_list[$i]['reg_time'] = local_date($GLOBALS['_CFG']['date_format'], $user_list[$i]['reg_time']);
+    // }
 
     $arr = array('user_list' => $user_list, 'filter' => $filter,
         'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);

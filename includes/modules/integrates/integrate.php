@@ -68,6 +68,7 @@ class integrate
     /* 注册日期的字段名 */
     var $field_reg_date = '';
 
+    var $parent_id = '';
     /* 是否需要同步数据到商城 */
     var $need_sync = true;
 
@@ -183,8 +184,9 @@ class integrate
      *
      * @return int
      */
-    function add_user($username, $password, $email, $gender = -1, $bday = 0, $reg_date=0, $md5password='')
+    function add_user($username, $password, $parent_id, $gender = -1, $bday = 0, $reg_date=0, $md5password='')
     {
+
         /* 将用户添加到整合方 */
         if ($this->check_user($username) > 0)
         {
@@ -195,7 +197,7 @@ class integrate
         /* 检查email是否重复 */
         $sql = "SELECT " . $this->field_id .
                " FROM " . $this->table($this->user_table).
-               " WHERE " . $this->field_email . " = '$email'";
+               " WHERE " . $this->field_name . " = '$username'";
         if ($this->db->getOne($sql, true) > 0)
         {
             $this->error = ERR_EMAIL_EXISTS;
@@ -214,8 +216,8 @@ class integrate
             $post_password = $this->compile_password(array('password'=>$password));
         }
 
-        $fields = array($this->field_name, $this->field_email, $this->field_pass);
-        $values = array($post_username, $email, $post_password);
+        $fields = array($this->field_name, 'parent_id', $this->field_pass);
+        $values = array($post_username, $parent_id, $post_password);
 
         if ($gender > -1)
         {
@@ -277,31 +279,12 @@ class integrate
             $values[] = $this->field_pass . "='" . $this->compile_password(array('md5password'=>$cfg['md5password'])) . "'";
         }
 
-        if ((!empty($cfg['email'])) && $this->field_email != 'NULL')
+        if ((!empty($cfg['parent_id'])))
         {
-            /* 检查email是否重复 */
-            $sql = "SELECT " . $this->field_id .
-                   " FROM " . $this->table($this->user_table).
-                   " WHERE " . $this->field_email . " = '$cfg[email]' ".
-                   " AND " . $this->field_name . " != '$cfg[post_username]'";
-            if ($this->db->getOne($sql, true) > 0)
-            {
-                $this->error = ERR_EMAIL_EXISTS;
-
-                return false;
-            }
-            // 检查是否为新E-mail
-            $sql = "SELECT count(*)" .
-                   " FROM " . $this->table($this->user_table).
-                   " WHERE " . $this->field_email . " = '$cfg[email]' ";
-            if($this->db->getOne($sql, true) == 0)
-            {
-                // 新的E-mail
-                $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET is_validated = 0 WHERE user_name = '$cfg[post_username]'";
-                $this->db->query($sql);
-            }
-            $values[] = $this->field_email . "='". $cfg['email'] . "'";
+            
+            $values[] = 'parent_id' . "='". $cfg['parent_id'] . "'";
         }
+
 
         if (isset($cfg['gender']) && $this->field_gender != 'NULL')
         {
@@ -427,9 +410,10 @@ class integrate
         $sql = "SELECT " . $this->field_id . " AS user_id," . $this->field_name . " AS user_name," .
                     $this->field_email . " AS email," . $this->field_gender ." AS sex,".
                     $this->field_bday . " AS birthday," . $this->field_reg_date . " AS reg_time, ".
-                    $this->field_pass . " AS password ".
+                    $this->field_pass . " AS password ,"."user_type".
                " FROM " . $this->table($this->user_table) .
                " WHERE " .$this->field_name . "='$post_username'";
+               // echo $sql;die;
         $row = $this->db->getRow($sql);
 
         return $row;
