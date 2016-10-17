@@ -1,6 +1,6 @@
 <?php
 // database host
-$db_host   = "localhost:3306";
+$db_host   = "47.90.41.189:3306";
 
 // database name
 $db_name   = "fx";
@@ -9,7 +9,7 @@ $db_name   = "fx";
 $db_user   = "root";
 
 // database password
-$db_pass   = "111";
+$db_pass   = "paoma~!@";
 
 // table prefix
 $prefix    = "ecs_";
