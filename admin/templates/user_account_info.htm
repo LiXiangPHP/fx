@@ -5,7 +5,7 @@
   <form action="user_account.php" method="post" name="theForm" onsubmit="return validate()">
     <table width="100%">
       <tr>
-        <td class="label">{$lang.user_id}：</td>
+        <td class="label">手机号：</td>
         <td>
           <input type="text" name="user_id" value="{$user_name}" size="20"
           {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"} readonly="true" {/if}/>
@@ -18,16 +18,20 @@
           {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"} readonly="true" {/if}/>
         </td>
       </tr>
-      <tr>
+      <input type="hidden" name="payment" value='银行汇款/转帐'>
+      <input type="hidden" name="usertype" value='{$usertype}'>
+
+     <!--  <tr>
         <td class="label">{$lang.pay_mothed}：</td>
-        <td>
-          <select name="payment" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3}disabled="true" {/if}>
-          <option value="">{$lang.please_select}</option>
+        <td >
+
+          <select name="payment" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3}disabled="true" {/if} >
+          <option value="银行汇款/转帐">{$lang.please_select}</option>
           {html_options options=$payment_list selected=$user_surplus.payment}
           </select>
         </td>
         </td>
-      </tr>
+      </tr> -->
       <tr>
         <td class="label">{$lang.process_type}：</td>
         <td>

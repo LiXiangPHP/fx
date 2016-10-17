@@ -34,7 +34,8 @@ if ($_REQUEST['act'] == 'list')
 {
     /* 权限判断 */
     admin_priv('surplus_manage');
-
+    $usertype = !empty($_REQUEST['usertype']) ? intval($_REQUEST['usertype']) : 6;
+    $process_type = !empty($_REQUEST['process_type']) ? intval($_REQUEST['process_type']) : null;
     /* 指定会员的ID为查询条件 */
     $user_id = !empty($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
 
@@ -58,17 +59,31 @@ if ($_REQUEST['act'] == 'list')
     {
         $smarty->assign('is_paid_' . intval($_REQUEST['is_paid']), 'selected="selected"');
     }
-    $smarty->assign('ur_here',       $_LANG['09_user_account']);
+    if($process_type)
+    {
+        $smarty->assign('ur_here',       '商户贷款申请');
+    }
+    else
+    {
+        $smarty->assign('ur_here',       $_LANG['09_user_account']);
+    }
+    
     $smarty->assign('id',            $user_id);
     $smarty->assign('payment_list',  $payment);
-    $smarty->assign('action_link',   array('text' => $_LANG['surplus_add'], 'href'=>'user_account.php?act=add'));
-
-    $list = account_list();
+    if($process_type != 2)
+    {
+        $smarty->assign('action_link',   array('text' => $_LANG['surplus_add'], 'href'=>'user_account.php?act=add&usertype='.$usertype));
+    }
+    
+    $list = account_list($usertype);
     $smarty->assign('list',         $list['list']);
+    // print_r($list['list']);die;
     $smarty->assign('filter',       $list['filter']);
     $smarty->assign('record_count', $list['record_count']);
     $smarty->assign('page_count',   $list['page_count']);
     $smarty->assign('full_page',    1);
+    $smarty->assign('usertype',        $usertype);
+    $smarty->assign('process_type',        $process_type);
 
     assign_query_info();
     $smarty->display('user_account_list.htm');
@@ -80,7 +95,7 @@ if ($_REQUEST['act'] == 'list')
 elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
 {
     admin_priv('surplus_manage'); //权限判断
-
+    $usertype = isset($_GET['usertype']) ? intval($_GET['usertype']) : 6;
     $ur_here  = ($_REQUEST['act'] == 'add') ? $_LANG['surplus_add'] : $_LANG['surplus_edit'];
     $form_act = ($_REQUEST['act'] == 'add') ? 'insert' : 'update';
     $id       = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -117,18 +132,20 @@ elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
 
     /* 模板赋值 */
     $smarty->assign('ur_here',          $ur_here);
+
     $smarty->assign('form_act',         $form_act);
     $smarty->assign('payment_list',     $payment);
     $smarty->assign('action',           $_REQUEST['act']);
     $smarty->assign('user_surplus',     $user_account);
     $smarty->assign('user_name',        $user_name);
+    $smarty->assign('usertype',        $usertype);
     if ($_REQUEST['act'] == 'add')
     {
-        $href = 'user_account.php?act=list';
+        $href = 'user_account.php?act=list&usertype='.$usertype;
     }
     else
     {
-        $href = 'user_account.php?act=list&' . list_link_postfix();
+        $href = 'user_account.php?act=list&' . list_link_postfix().'&usertype='.$usertype;
     }
     $smarty->assign('action_link', array('href' => $href, 'text' => $_LANG['09_user_account']));
 
@@ -143,7 +160,7 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
 {
     /* 权限判断 */
     admin_priv('surplus_manage');
-
+        $usertype           = isset($_POST['usertype'])            ? intval($_POST['usertype'])             : 6;
     /* 初始化变量 */
     $id           = isset($_POST['id'])            ? intval($_POST['id'])             : 0;
     $is_paid      = !empty($_POST['is_paid'])      ? intval($_POST['is_paid'])        : 0;
@@ -239,11 +256,11 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
     /* 提示信息 */
     if ($_REQUEST['act'] == 'insert')
     {
-        $href = 'user_account.php?act=list';
+        $href = 'user_account.php?act=list&usertype='.$usertype;
     }
     else
     {
-        $href = 'user_account.php?act=list&' . list_link_postfix();
+        $href = 'user_account.php?act=list&' . list_link_postfix().'&usertype='.$usertype;
     }
     $link[0]['text'] = $_LANG['back_list'];
     $link[0]['href'] = $href;
@@ -275,6 +292,7 @@ elseif ($_REQUEST['act'] == 'check')
     /* 查询当前的预付款信息 */
     $account = array();
     $account = $db->getRow("SELECT * FROM " .$ecs->table('user_account'). " WHERE id = '$id'");
+
     $account['add_time'] = local_date($_CFG['time_format'], $account['add_time']);
 
     //余额类型:预付款，退款申请，购买商品，取消订单
@@ -288,7 +306,7 @@ elseif ($_REQUEST['act'] == 'check')
     }
     elseif ($account['process_type'] == 2)
     {
-        $process_type = $_LANG['surplus_type_2'];
+        $process_type = '贷款';
     }
     else
     {
@@ -303,10 +321,20 @@ elseif ($_REQUEST['act'] == 'check')
     $account['user_note'] = htmlspecialchars($account['user_note']);
     $smarty->assign('surplus',      $account);
     $smarty->assign('process_type', $process_type);
+
     $smarty->assign('user_name',    $user_name);
     $smarty->assign('id',           $id);
-    $smarty->assign('action_link',  array('text' => $_LANG['09_user_account'],
+    if($account['process_type'] == 2)
+    {
+        $smarty->assign('action_link',  array('text' => '贷款申请',
+    'href'=>'user_account.php?act=list&' . list_link_postfix().'&usertype=1&process_type=2'));
+    }
+    else
+    {
+        $smarty->assign('action_link',  array('text' => $_LANG['09_user_account'],
     'href'=>'user_account.php?act=list&' . list_link_postfix()));
+    }
+    
 
     /* 页面显示 */
     assign_query_info();
@@ -478,11 +506,10 @@ function update_user_account($id, $amount, $admin_note, $is_paid)
  *
  * @return void
  */
-function account_list()
+function account_list($usertype=6)
 {
-    $result = get_filter();
-    if ($result === false)
-    {
+
+
         /* 过滤列表 */
         $filter['user_id'] = !empty($_REQUEST['user_id']) ? intval($_REQUEST['user_id']) : 0;
         $filter['keywords'] = empty($_REQUEST['keywords']) ? '' : trim($_REQUEST['keywords']);
@@ -498,7 +525,8 @@ function account_list()
         $filter['sort_order'] = empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
         $filter['start_date'] = empty($_REQUEST['start_date']) ? '' : local_strtotime($_REQUEST['start_date']);
         $filter['end_date'] = empty($_REQUEST['end_date']) ? '' : (local_strtotime($_REQUEST['end_date']) + 86400);
-
+        $usertype = isset($_REQUEST['usertype']) ? intval($_REQUEST['usertype']) : 6;
+// echo $usertype;die;
         $where = " WHERE 1 ";
         if ($filter['user_id'] > 0)
         {
@@ -507,6 +535,10 @@ function account_list()
         if ($filter['process_type'] != -1)
         {
             $where .= " AND ua.process_type = '$filter[process_type]' ";
+        }
+        elseif($filter['process_type'] == 3)
+        {
+            $where .= " AND ua.process_type = '$filter[process_type]'" ;
         }
         else
         {
@@ -532,31 +564,30 @@ function account_list()
         {
             $where .= "AND paid_time >= " . $filter['start_date']. " AND paid_time < '" . $filter['end_date'] . "'";
         }
-
+        if($usertype)
+        {
+             $where .= " AND u.user_type = '$usertype' ";
+        }
         /* $sql = "SELECT COUNT(*) FROM " .$GLOBALS['ecs']->table('user_account'). " AS ua, ".
                    $GLOBALS['ecs']->table('users') . " AS u " . $where; */
         $sql = "SELECT COUNT(*) FROM " .$GLOBALS['ecs']->table('user_account'). " ua left join ".
         		$GLOBALS['ecs']->table('users') . " u on ua.user_id = u.user_id " . $where;
-         
+         // echo $sql;die;
         $filter['record_count'] = $GLOBALS['db']->getOne($sql);
 
         /* 分页大小 */
         $filter = page_and_size($filter);
 
         /* 查询数据 */
-        $sql  = 'SELECT ua.*, u.user_name FROM ' .
+        $sql  = 'SELECT ua.*, u.user_name,u.Field_zzs,i.htsort,i.num,i.name FROM ' .
             $GLOBALS['ecs']->table('user_account'). ' AS ua LEFT JOIN ' .
-            $GLOBALS['ecs']->table('users'). ' AS u ON ua.user_id = u.user_id'.
+            $GLOBALS['ecs']->table('users'). ' AS u ON ua.user_id = u.user_id'. 
+            ' LEFT JOIN' . $GLOBALS['ecs']->table('idcard'). 'AS i ON ua.user_id = i.uid'.
             $where . "ORDER by " . $filter['sort_by'] . " " .$filter['sort_order']. " LIMIT ".$filter['start'].", ".$filter['page_size'];
 
         $filter['keywords'] = stripslashes($filter['keywords']);
-        set_filter($filter, $sql);
-    }
-    else
-    {
-        $sql    = $result['sql'];
-        $filter = $result['filter'];
-    }
+        
+
 
     $list = $GLOBALS['db']->getAll($sql);
     foreach ($list AS $key => $value)

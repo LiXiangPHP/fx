@@ -5,16 +5,21 @@
 <div class="form-div">
   <form action="javascript:searchUser()" name="searchForm">
     <img src="images/icon_search.gif" width="25" height="22" border="0" alt="SEARCH" />
-    {$lang.user_id} <input type="text" name="keyword" size="10" />
+   手机号 <input type="text" name="keyword" size="10" />
+   {if !$process_type}
       <select name="process_type">
         <option value="-1">{$lang.process_type}</option>
         <option value="0" {$process_type_0}>{$lang.surplus_type_0}</option>
         <option value="1" {$process_type_1}>{$lang.surplus_type_1}</option>
       </select>
-      <select name="payment">
+      {else}
+      <input type="hidden" value="2" name="process_type">
+      <input type="hidden" value="{$usertype}" name="usertype">
+      {/if}
+<!--       <select name="payment">
       <option value="">{$lang.pay_mothed}</option>
       {html_options options=$payment_list}
-      </select>
+      </select> -->
       <select name="is_paid">
         <option value="-1">{$lang.status}</option>
         <option value="0" {$is_paid_0}>{$lang.unconfirm}</option>
@@ -31,11 +36,16 @@
 {/if}
 <table cellpadding="3" cellspacing="1">
   <tr>
-    <th><a href="javascript:listTable.sort('user_name', 'DESC'); ">{$lang.user_id}</a>{$sort_user_name}</th>
+    <th><a href="javascript:listTable.sort('user_name', 'DESC'); ">手机号</a>{$sort_user_name}</th>
+    {if $usertype == 1}
+    <th>商户名</th>
+    {/if}
     <th><a href="javascript:listTable.sort('add_time', 'DESC'); ">{$lang.add_date}</a>{$sort_add_time}</th>
     <th><a href="javascript:listTable.sort('process_type', 'DESC'); ">{$lang.process_type}</a>{$sort_process_type}</th>
     <th><a href="javascript:listTable.sort('amount', 'DESC'); ">{$lang.surplus_amount}</a>{$sort_amount}</th>
-    <th><a href="javascript:listTable.sort('payment', 'DESC'); ">{$lang.pay_mothed}</a>{$sort_payment}</th>
+    <th><a href="javascript:listTable.sort('payment', 'DESC'); ">户名</a>{$sort_payment}</th>
+    <th>银行</th>
+    <th>账号</th>
     <th><a href="javascript:listTable.sort('is_paid', 'DESC'); ">{$lang.status}</a>{$sort_is_paid}</th>
     <th>{$lang.admin_user}</th>
     <th>{$lang.handler}</th>
@@ -43,10 +53,15 @@
   {foreach from=$list item=item}
   <tr>
     <td>{if $item.user_name}{$item.user_name}{else}{$lang.no_user}{/if}</td>
+    {if $usertype == 1}
+    <td>{$item.Field_zzs}</td>
+    {/if}
     <td align="center">{$item.add_date}</td>
     <td align="center">{$item.process_type_name}</td>
     <td align="right">{$item.surplus_amount}</td>
-    <td>{if $item.payment}{$item.payment}{else}N/A{/if}</td>
+    <td>{$item.name}</td>
+    <td>{$item.htsort}</td>
+    <td>{$item.num}</td>
     <td align="center">{if $item.is_paid}{$lang.confirm}{else}{$lang.unconfirm}{/if}</td>
     <td align="center">{$item.admin_user}
     <td align="center">
@@ -98,8 +113,10 @@ function searchUser()
 {
     listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
     listTable.filter['process_type'] = document.forms['searchForm'].elements['process_type'].value;
-    listTable.filter['payment'] = Utils.trim(document.forms['searchForm'].elements['payment'].value);
+    // listTable.filter['payment'] = Utils.trim(document.forms['searchForm'].elements['payment'].value);
     listTable.filter['is_paid'] = document.forms['searchForm'].elements['is_paid'].value;
+    listTable.filter['usertype'] = document.forms['searchForm'].elements['usertype'].value;
+
     listTable.filter['page'] = 1;
     listTable.loadList();
 }

@@ -59,10 +59,17 @@ elseif ($_REQUEST['act'] == 'list')
 {
     /* 检查权限 */
     admin_priv('order_view');
-
+    $is_sj = !empty($_REQUEST['is_sj']) ? intval($_REQUEST['is_sj']) : 0;
     /* 模板赋值 */
-    $smarty->assign('ur_here', $_LANG['02_order_list']);
-    $smarty->assign('action_link', array('href' => 'order.php?act=order_query', 'text' => $_LANG['03_order_query']));
+    if($is_sj)
+    {
+        $smarty->assign('ur_here', '商家做单列表');
+    }
+    else
+    {
+        $smarty->assign('ur_here', $_LANG['02_order_list']);
+    }
+    // $smarty->assign('action_link', array('href' => 'order.php?act=order_query', 'text' => $_LANG['03_order_query']));
 
     $smarty->assign('status_list', $_LANG['cs']);   // 订单状态
 
@@ -71,14 +78,15 @@ elseif ($_REQUEST['act'] == 'list')
     $smarty->assign('cs_await_ship',    CS_AWAIT_SHIP);
     $smarty->assign('full_page',        1);
 
-    $order_list = order_list();
+    $order_list = order_list($is_sj);
 
     $smarty->assign('order_list',   $order_list['orders']);
     $smarty->assign('filter',       $order_list['filter']);
     $smarty->assign('record_count', $order_list['record_count']);
     $smarty->assign('page_count',   $order_list['page_count']);
     $smarty->assign('sort_order_time', '<img src="images/sort_desc.gif">');
-
+    $smarty->assign('is_sj', $is_sj);
+    // print_r($order_list);die;
     /* 显示模板 */
     assign_query_info();
     $smarty->display('order_list.htm');
@@ -120,12 +128,13 @@ elseif ($_REQUEST['act'] == 'info')
         $order_sn = trim($_REQUEST['order_sn']);
         $order = order_info(0, $order_sn);
     }
+
     else
     {
         /* 如果参数不存在，退出 */
         die('invalid parameter');
     }
-
+    $is_sj = $order['is_sj'];
     /* 如果订单不存在，退出 */
     if (empty($order))
     {
@@ -526,7 +535,15 @@ elseif ($_REQUEST['act'] == 'info')
     {
         /* 模板赋值 */
         $smarty->assign('ur_here', $_LANG['order_info']);
-        $smarty->assign('action_link', array('href' => 'order.php?act=list&' . list_link_postfix(), 'text' => $_LANG['02_order_list']));
+        if($is_sj)
+        {
+            $smarty->assign('action_link', array('href' => 'order.php?act=list&' . list_link_postfix().'&is_sj=1', 'text' => '商家做单列表'));
+        }
+        else
+        {
+            $smarty->assign('action_link', array('href' => 'order.php?act=list&' . list_link_postfix(), 'text' => $_LANG['02_order_list']));
+        }
+        
 
         /* 显示模板 */
         assign_query_info();
@@ -4865,11 +4882,9 @@ function handle_order_money_change($order, &$msgs, &$links)
  *
  * @return void
  */
-function order_list()
+function order_list($is_sj=0)
 {
-    $result = get_filter();
-    if ($result === false)
-    {
+
         /* 过滤信息 */
         $filter['order_sn'] = empty($_REQUEST['order_sn']) ? '' : trim($_REQUEST['order_sn']);
         if (!empty($_GET['is_ajax']) && $_GET['is_ajax'] == 1)
@@ -5032,7 +5047,10 @@ function order_list()
         {
             $where .= " AND o.agency_id = '$agency_id' ";
         }
-
+        if($is_sj)
+        {
+            $where .= " AND o.is_sj = '$is_sj' ";
+        }
         /* 分页大小 */
         $filter['page'] = empty($_REQUEST['page']) || (intval($_REQUEST['page']) <= 0) ? 1 : intval($_REQUEST['page']);
 
@@ -5065,7 +5083,7 @@ function order_list()
 
         /* 查询 */
         $sql = "SELECT o.order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid," .
-                    "o.pay_status, o.consignee, o.address, o.email, o.tel, o.extension_code, o.extension_id, " .
+                    "o.pay_status, o.consignee, o.address, o.email, o.tel, o.extension_code, o.extension_id,o.sid,o.is_sj, " .
                     "(" . order_amount_field('o.') . ") AS total_fee, " .
                     "IFNULL(u.user_name, '" .$GLOBALS['_LANG']['anonymous']. "') AS buyer ,u.parent_id".
                 " FROM " . $GLOBALS['ecs']->table('order_info') . " AS o " .
@@ -5077,13 +5095,7 @@ function order_list()
         {
             $filter[$val] = stripslashes($filter[$val]);
         }
-        set_filter($filter, $sql);
-    }
-    else
-    {
-        $sql    = $result['sql'];
-        $filter = $result['filter'];
-    }
+
 
     $row = $GLOBALS['db']->getAll($sql);
 
@@ -5103,6 +5115,13 @@ function order_list()
         {
             $row[$key]['can_remove'] = 0;
         }
+        if($value['sid'])
+        {
+             $sql = "SELECT Field_zzs FROM " . $GLOBALS['ecs']->table('users') . " WHERE user_id = '$value[sid]'";
+             $s_name = $GLOBALS['db']->getAll($sql);
+             $row[$key]['s_name'] = $s_name[0]['Field_zzs'];
+        }
+        
 
     }
     $arr = array('orders' => $row, 'filter' => $filter, 'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);

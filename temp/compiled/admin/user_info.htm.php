@@ -138,9 +138,59 @@
   <tr>
     <td class="label">真实姓名:</td>
     <td>
-   <input type="text" name="username" maxlength="60" value="<?php echo $this->_var['user']['user_name']; ?>" />
+    <?php echo $this->_var['user']['Field_realname']; ?>
     </td>
   </tr>
+    <tr>
+    <td class="label">公司介绍:</td>
+    <td>
+    <?php echo $this->_var['user']['Field_memo']; ?>
+    </td>
+  </tr>
+
+    <tr>
+    <td class="label">联系地址:</td>
+    <td>
+    <?php echo $this->_var['user']['Field_address']; ?>
+    </td>
+  </tr>
+      <tr>
+    <td class="label">联系电话:</td>
+    <td>
+    <?php echo $this->_var['user']['mobile_phone']; ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">qq:</td>
+    <td>
+    <?php echo $this->_var['user']['qq']; ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">联系人:</td>
+    <td>
+    <?php echo $this->_var['user']['Field_contract']; ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">类型:</td>
+    <td>
+    <?php echo $this->_var['user']['Field_lx']; ?>
+    </td>
+  </tr>
+    <tr>
+    <td class="label">经营范围:</td>
+    <td>
+    <?php echo $this->_var['user']['Field_ctbs']; ?>
+    </td>
+  </tr>
+    <tr>
+    <td class="label">商家名称:</td>
+    <td>
+    <?php echo $this->_var['user']['Field_zzs']; ?>
+    </td>
+  </tr>
+
   <?php endif; ?>
   <tr>
     <td colspan="2" align="center">

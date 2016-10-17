@@ -235,7 +235,7 @@ elseif ($_REQUEST['act'] == 'edit')
     $user   = $users->get_user_info($row['user_name']);
 
     $sql = "SELECT u.user_id, u.sex, u.birthday, u.pay_points, u.rank_points, u.user_rank , u.user_money, u.frozen_money, u.credit_line, u.parent_id, u2.user_name as parent_username, u.qq, u.msn,
-    u.office_phone, u.home_phone, u.mobile_phone,u.user_type,u.image1,u.image2,u.image3,u.image4,u.image5,u.image6,u.image7,u.image8".
+    u.office_phone, u.home_phone, u.mobile_phone,u.user_type,u.image1,u.image2,u.image3,u.image4,u.image5,u.image6,u.image7,u.image8,u.Field_realname,u.Field_memo,u.Field_address,u.Field_lx,u.mobile_phone,u.qq,u.Field_contract,u.Field_ctbs,u.Field_zzs".
         " FROM " .$ecs->table('users'). " u LEFT JOIN " . $ecs->table('users') . " u2 ON u.parent_id = u2.user_id WHERE u.user_id='$_GET[id]'";
 
     $row = $db->GetRow($sql);
@@ -269,6 +269,18 @@ elseif ($_REQUEST['act'] == 'edit')
         $user['image6']   = $row['image6'];
         $user['image7']   = $row['image7'];
         $user['image8']   = $row['image8'];
+        $user['Field_realname']   = $row['Field_realname'];
+        $user['Field_memo']   = $row['Field_memo'];
+        $user['Field_address']   = $row['Field_address'];
+        $user['mobile_phone']   = $row['mobile_phone'];
+        $user['qq']   = $row['qq'];
+        $user['Field_contract']   = $row['Field_contract'];
+        $user['Field_lx']   = $row['Field_lx'];
+        $user['Field_ctbs']   = $row['Field_ctbs'];
+        $user['Field_zzs']   = $row['Field_zzs'];
+
+
+
     }
     else
     {
@@ -352,7 +364,7 @@ elseif ($_REQUEST['act'] == 'edit')
     $smarty->assign('ur_here',          $_LANG['users_edit']);
     if($user['usertype'] == 1)
     {
-        $smarty->assign('action_link',      array('text' => "商户列表", 'href'=>'users.php?act=list&usertype=6'));
+        $smarty->assign('action_link',      array('text' => "商户列表", 'href'=>'users.php?act=list&usertype=1'));
     }
     if($user['usertype'] == 6)
     {
@@ -375,8 +387,12 @@ elseif ($_REQUEST['act'] == 'update')
     /* 检查权限 */
     admin_priv('users_manage');
     $pusername = empty($_POST['pusername']) ? '' : trim($_POST['pusername']);
-    $sql = 'SELECT user_id FROM ' . $ecs->table('users') . ' WHERE user_name = '.$pusername;
-    $parent_id = $db->getONE($sql);
+    if($pusername)
+    {
+        $sql = 'SELECT user_id FROM ' . $ecs->table('users') . ' WHERE user_name = '.$pusername;
+        $parent_id = $db->getONE($sql);
+    }
+    
 
     $username = empty($_POST['username']) ? '' : trim($_POST['username']);
     $password = empty($_POST['password']) ? '' : trim($_POST['password']);
@@ -451,7 +467,15 @@ elseif ($_REQUEST['act'] == 'update')
 
     /* 提示信息 */
     $links[0]['text']    = $_LANG['goto_list'];
-    $links[0]['href']    = 'users.php?act=list&' . list_link_postfix();
+    if($_GET['usertype'] == 1)
+    {
+        $links[0]['href']    = 'users.php?act=list&' . list_link_postfix().'&usertype=1';
+    }
+    if($_GET['usertype'] == 6)
+    {
+        $links[0]['href']    = 'users.php?act=list&' . list_link_postfix().'&usertype=6';
+    }
+    
     $links[1]['text']    = $_LANG['go_back'];
     $links[1]['href']    = 'javascript:history.back()';
 
