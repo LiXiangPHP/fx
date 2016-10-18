@@ -36,7 +36,7 @@ $modules['02_cat_and_goods']['51_virtual_card_add']    = 'goods.php?act=add&exte
 $modules['02_cat_and_goods']['52_virtual_card_change'] = 'virtual_card.php?act=change';
 $modules['02_cat_and_goods']['goods_auto']             = 'goods_auto.php?act=list';
 $modules['11_system']['website']  = 'website.php?act=list';//ecmoban
-
+//促销
 $modules['03_promotion']['02_snatch_list']          = 'snatch.php?act=list';
 $modules['03_promotion']['04_bonustype_list']       = 'bonus.php?act=list';
 $modules['03_promotion']['06_pack_list']            = 'pack.php?act=list';
@@ -89,7 +89,7 @@ $modules['08_members']['05_user_rank_list']         = 'user_rank.php?act=list';
 // $modules['08_members']['06_list_integrate']         = 'integrate.php?act=list';
 $modules['08_members']['08_unreply_msg']            = 'user_msg.php?act=list_all';
 $modules['08_members']['09_user_account']           = 'user_account.php?act=list';
-// $modules['08_members']['10_user_account_manage']    = 'user_account_manage.php?act=list';
+$modules['08_members']['10_user_account_manage']    = 'user_account_manage.php?act=list';
 /*商户管理*/
 $modules['09_shop']['02_shop_list']             = 'users.php?act=list&usertype=1';
 $modules['09_shop']['03_shop_account']             = 'user_account.php?act=list&usertype=1';
@@ -102,7 +102,7 @@ $modules['17_company']['04_manager_pay']             = 'user_account.php?act=lis
 $modules['17_company']['05_company_shop']             = 'users.php?act=list&usertype=1&pid=1';
 $modules['17_company']['06_company_user']             = 'users.php?act=list&usertype=6&pid=1';
 $modules['17_company']['07_company_point']             = 'users.php?act=point';
-$modules['17_company']['08_user_account1']             = 'account_manage.php?act=list';
+// $modules['17_company']['08_user_account1']             = 'account_manage.php?act=list';
 
 
 
@@ -131,7 +131,7 @@ $modules['11_system']['navigator']                  = 'navigator.php?act=list';
 //$modules['11_system']['fckfile_manage']             = 'fckfile_manage.php?act=list';
 $modules['11_system']['021_reg_fields']             = 'reg_fields.php?act=list';
 
-
+//模板
 $modules['12_template']['02_template_select']       = 'template.php?act=list';
 $modules['12_template']['03_template_setup']        = 'template.php?act=setup';
 $modules['12_template']['04_template_library']      = 'template.php?act=library';
@@ -155,7 +155,7 @@ $modules['14_sms']['03_sms_send']                   = 'sms.php?act=display_send_
 
 $modules['15_rec']['affiliate']                     = 'affiliate.php?act=list';
 $modules['15_rec']['affiliate_ck']                  = 'affiliate_ck.php?act=list';
-
+//邮件
 $modules['16_email_manage']['email_list']           = 'email_list.php?act=list';
 $modules['16_email_manage']['magazine_list']        = 'magazine_list.php?act=list';
 $modules['16_email_manage']['attention_list']       = 'attention_list.php?act=list';
