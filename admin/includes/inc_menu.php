@@ -89,7 +89,7 @@ $modules['08_members']['05_user_rank_list']         = 'user_rank.php?act=list';
 // $modules['08_members']['06_list_integrate']         = 'integrate.php?act=list';
 $modules['08_members']['08_unreply_msg']            = 'user_msg.php?act=list_all';
 $modules['08_members']['09_user_account']           = 'user_account.php?act=list';
-$modules['08_members']['10_user_account_manage']    = 'user_account_manage.php?act=list';
+// $modules['08_members']['10_user_account_manage']    = 'user_account_manage.php?act=list';
 /*商户管理*/
 $modules['09_shop']['02_shop_list']             = 'users.php?act=list&usertype=1';
 $modules['09_shop']['03_shop_account']             = 'user_account.php?act=list&usertype=1';
@@ -102,6 +102,7 @@ $modules['17_company']['04_manager_pay']             = 'user_account.php?act=lis
 $modules['17_company']['05_company_shop']             = 'users.php?act=list&usertype=1&pid=1';
 $modules['17_company']['06_company_user']             = 'users.php?act=list&usertype=6&pid=1';
 $modules['17_company']['07_company_point']             = 'users.php?act=point';
+$modules['17_company']['08_user_account']             = 'user_account_manage.php?act=list';
 
 
 

@@ -154,6 +154,8 @@ $_LANG['04_manager_pay'] = '区域经理工资提现';
 $_LANG['05_company_shop'] = '公司邀请商家列表';
 $_LANG['06_company_user'] = '公司邀请会员列表';
 $_LANG['07_company_point'] = '公司积分明细';
+$_LANG['08_user_account'] = '公司资金管理';
+
 
 
 /*商户管理*/
