@@ -102,7 +102,7 @@ $modules['17_company']['04_manager_pay']             = 'user_account.php?act=lis
 $modules['17_company']['05_company_shop']             = 'users.php?act=list&usertype=1&pid=1';
 $modules['17_company']['06_company_user']             = 'users.php?act=list&usertype=6&pid=1';
 $modules['17_company']['07_company_point']             = 'users.php?act=point';
-$modules['17_company']['08_user_account']             = 'user_account_manage.php?act=list';
+$modules['17_company']['08_user_account1']             = 'account_manage.php?act=list';
 
 
 
