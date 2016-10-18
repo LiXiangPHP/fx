@@ -2,16 +2,14 @@
 <!-- $Id: users_list.htm 17053 2010-03-15 06:50:26Z sxc_shop $ -->
 <?php echo $this->fetch('pageheader.htm'); ?>
 <?php echo $this->smarty_insert_scripts(array('files'=>'../js/utils.js,listtable.js')); ?>
-<?php if (! $this->_var['pid']): ?>
+
 <div class="form-div">
   <form action="javascript:searchUser()" name="searchForm">
-    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
-    &nbsp;<?php echo $this->_var['lang']['label_rank_name']; ?> <select name="user_rank"><option value="0"><?php echo $this->_var['lang']['all_option']; ?></option><?php echo $this->html_options(array('options'=>$this->_var['user_ranks'])); ?></select>
-    &nbsp;<?php echo $this->_var['lang']['label_pay_points_gt']; ?>&nbsp;<input type="text" name="pay_points_gt" size="8" />&nbsp;<?php echo $this->_var['lang']['label_pay_points_lt']; ?>&nbsp;<input type="text" name="pay_points_lt" size="10" />
-    &nbsp;<?php echo $this->_var['lang']['label_user_name']; ?> &nbsp;<input type="text" name="keyword" /> <input type="submit" value="<?php echo $this->_var['lang']['button_search']; ?>" />
+
+    &nbsp;手机号 &nbsp;<input type="text" name="keyword" /> <input type="submit" value="<?php echo $this->_var['lang']['button_search']; ?>" />
   </form>
 </div>
-<?php endif; ?>
+
 <form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
 
 <!-- start users list -->
@@ -93,10 +91,7 @@ onload = function()
 function searchUser()
 {
     listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
-    listTable.filter['rank'] = document.forms['searchForm'].elements['user_rank'].value;
-    listTable.filter['pay_points_gt'] = Utils.trim(document.forms['searchForm'].elements['pay_points_gt'].value);
-    listTable.filter['pay_points_lt'] = Utils.trim(document.forms['searchForm'].elements['pay_points_lt'].value);
-    listTable.filter['page'] = 1;
+    listTable.filter['usertype'] = 7;
     listTable.loadList();
 }
 

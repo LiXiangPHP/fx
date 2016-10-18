@@ -68,7 +68,7 @@
     {if $item.is_paid}
     <a href="user_account.php?act=edit&id={$item.id}" title="{$lang.surplus}"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>
     {else}
-    <a href="user_account.php?act=check&id={$item.id}" title="{$lang.check}"><img src="images/icon_view.gif" border="0" height="16" width="16" />
+    <a href="user_account.php?act=check&id={$item.id}&usertype={$usertype}" title="{$lang.check}"><img src="images/icon_view.gif" border="0" height="16" width="16" />
     <a href="javascript:;" onclick="listTable.remove({$item.id}, '{$lang.drop_confirm}')" title="{$lang.drop}" ><img src="images/icon_drop.gif" border="0" height="16" width="16" /></a>
     {/if}
     </td>

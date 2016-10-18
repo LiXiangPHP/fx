@@ -30,6 +30,9 @@ $_LANG['no_user'] = '匿名购买';
 $_LANG['surplus_type_0'] = '充值';
 $_LANG['surplus_type_1'] = '提现';
 $_LANG['surplus_type_2'] = '贷款';
+$_LANG['surplus_type_3'] = '佣金';
+$_LANG['surplus_type_4'] = '工资';
+
 
 $_LANG['admin_user'] = '操作员';
 

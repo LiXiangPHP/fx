@@ -39,8 +39,17 @@ if ($_REQUEST['act'] == 'list')
     
     // $smarty->assign('action_link',  array('text' => $_LANG['04_users_add'], 'href'=>'users.php?act=add'));
     $usertype = empty($_GET['usertype']) ? 6 : trim($_GET['usertype']);
+    $pid = empty($_GET['pid']) ? null : trim($_GET['pid']);
+    if($pid)
+    {
+        $user_list = user_list($usertype,$pid);
+    }
+    else
+    {
+        $user_list = user_list($usertype);
+    }
     // echo $usertype;die;
-    $user_list = user_list($usertype);
+    
     $smarty->assign('user_list',    $user_list['user_list']);
     $smarty->assign('filter',       $user_list['filter']);
     $smarty->assign('record_count', $user_list['record_count']);
@@ -57,12 +66,23 @@ if ($_REQUEST['act'] == 'list')
     if($usertype == 6)
     {
         $smarty->assign('ur_here',      $_LANG['03_users_list']);
+        $smarty->assign('pid',      $pid);
+
          $smarty->assign('action_link',  array('text' => $_LANG['04_users_add'], 'href'=>'users.php?act=add'));
         $smarty->display('users_list.htm');
        
     }
+    if($usertype == 7)
+    {
+        $smarty->assign('ur_here',      "区域经理列表");
+        $smarty->display('manager_list.htm');
+    }
 }
-
+elseif($_REQUEST['act'] == 'point')
+{
+     $smarty->assign('ur_here',      "公司积分明细");
+    $smarty->display('point.htm');
+}
 /*------------------------------------------------------ */
 //-- ajax返回用户列表
 /*------------------------------------------------------ */
@@ -742,10 +762,17 @@ function user_list($usertype = 6)
         $filter['pay_points_gt'] = empty($_REQUEST['pay_points_gt']) ? 0 : intval($_REQUEST['pay_points_gt']);
         $filter['pay_points_lt'] = empty($_REQUEST['pay_points_lt']) ? 0 : intval($_REQUEST['pay_points_lt']);
         $usertype = empty($_REQUEST['usertype']) ? 6 : intval($_REQUEST['usertype']);
-
+        if($_REQUEST['pid'])
+        {
+            $parent_id = $_REQUEST['pid'];
+        }
         $filter['sort_by']    = empty($_REQUEST['sort_by'])    ? 'user_id' : trim($_REQUEST['sort_by']);
         $filter['sort_order'] = empty($_REQUEST['sort_order']) ? 'DESC'     : trim($_REQUEST['sort_order']);
         $ex_where = " WHERE user_type =  $usertype";
+        if($parent_id)
+        {
+            $ex_where .=" AND parent_id = $parent_id"; 
+        }
         if ($filter['keywords'])
         {
             $ex_where .= " AND user_name LIKE '%" . mysql_like_quote($filter['keywords']) ."%'";
@@ -781,12 +808,11 @@ function user_list($usertype = 6)
                 " FROM " . $GLOBALS['ecs']->table('users') . $ex_where .
                 " ORDER by " . $filter['sort_by'] . ' ' . $filter['sort_order'] .
                 " LIMIT " . $filter['start'] . ',' . $filter['page_size'];
-
+                // echo $sql;die;
         $filter['keywords'] = stripslashes($filter['keywords']);
         set_filter($filter, $sql);
 
     $user_list = $GLOBALS['db']->getAll($sql);
-
     $count = count($user_list);
     // for ($i=0; $i<$count; $i++)
     // {

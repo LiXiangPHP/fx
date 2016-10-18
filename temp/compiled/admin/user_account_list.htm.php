@@ -70,7 +70,7 @@
     <?php if ($this->_var['item']['is_paid']): ?>
     <a href="user_account.php?act=edit&id=<?php echo $this->_var['item']['id']; ?>" title="<?php echo $this->_var['lang']['surplus']; ?>"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>
     <?php else: ?>
-    <a href="user_account.php?act=check&id=<?php echo $this->_var['item']['id']; ?>" title="<?php echo $this->_var['lang']['check']; ?>"><img src="images/icon_view.gif" border="0" height="16" width="16" />
+    <a href="user_account.php?act=check&id=<?php echo $this->_var['item']['id']; ?>&usertype=<?php echo $this->_var['usertype']; ?>" title="<?php echo $this->_var['lang']['check']; ?>"><img src="images/icon_view.gif" border="0" height="16" width="16" />
     <a href="javascript:;" onclick="listTable.remove(<?php echo $this->_var['item']['id']; ?>, '<?php echo $this->_var['lang']['drop_confirm']; ?>')" title="<?php echo $this->_var['lang']['drop']; ?>" ><img src="images/icon_drop.gif" border="0" height="16" width="16" /></a>
     <?php endif; ?>
     </td>

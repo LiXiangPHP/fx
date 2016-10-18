@@ -96,6 +96,13 @@ $modules['09_shop']['03_shop_account']             = 'user_account.php?act=list&
 $modules['09_shop']['04_shop_loan']             = 'user_account.php?act=list&usertype=1&process_type=2';
 $modules['09_shop']['05_shop_order']             = 'order.php?act=list&uselastfilter=1&is_sj=1';
 
+$modules['17_company']['02_manager_list']             = 'users.php?act=list&usertype=7';
+$modules['17_company']['03_manager_account']             = 'user_account.php?act=list&usertype=7&process_type=3';
+$modules['17_company']['04_manager_pay']             = 'user_account.php?act=list&usertype=7&process_type=4';
+$modules['17_company']['05_company_shop']             = 'users.php?act=list&usertype=1&pid=1';
+$modules['17_company']['06_company_user']             = 'users.php?act=list&usertype=6&pid=1';
+$modules['17_company']['07_company_point']             = 'users.php?act=point';
+
 
 
 $modules['10_priv_admin']['admin_logs']             = 'admin_logs.php?act=list';

@@ -35,7 +35,7 @@ if ($_REQUEST['act'] == 'list')
     /* 权限判断 */
     admin_priv('surplus_manage');
     $usertype = !empty($_REQUEST['usertype']) ? intval($_REQUEST['usertype']) : 6;
-    $process_type = !empty($_REQUEST['process_type']) ? intval($_REQUEST['process_type']) : null;
+    $process_type = !empty($_REQUEST['process_type']) ? intval($_REQUEST['process_type']) : -1;
     /* 指定会员的ID为查询条件 */
     $user_id = !empty($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
 
@@ -59,22 +59,32 @@ if ($_REQUEST['act'] == 'list')
     {
         $smarty->assign('is_paid_' . intval($_REQUEST['is_paid']), 'selected="selected"');
     }
-    if($process_type)
+    if($process_type == 2)
     {
         $smarty->assign('ur_here',       '商户贷款申请');
     }
-    else
+    if($process_type == 3)
+    {
+        $smarty->assign('ur_here',       '区域经理佣金提现');
+    }
+    if($process_type == 4)
+    {
+        $smarty->assign('ur_here',       '区域经理工资提现');
+    }
+    if($process_type == 0 || $process_type == 1)
     {
         $smarty->assign('ur_here',       $_LANG['09_user_account']);
     }
     
     $smarty->assign('id',            $user_id);
     $smarty->assign('payment_list',  $payment);
-    if($process_type != 2)
+    if($process_type == 2 || $process_type == 3 || $process_type == 4)
     {
+        
+    }
+    else{
         $smarty->assign('action_link',   array('text' => $_LANG['surplus_add'], 'href'=>'user_account.php?act=add&usertype='.$usertype));
     }
-    
     $list = account_list($usertype);
     $smarty->assign('list',         $list['list']);
     // print_r($list['list']);die;
@@ -281,6 +291,8 @@ elseif ($_REQUEST['act'] == 'check')
 
     /* 初始化 */
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    $usertype = isset($_GET['usertype']) ? intval($_GET['usertype']) : 6;
+
 
     /* 如果参数不合法，返回 */
     if ($id == 0)
@@ -307,10 +319,24 @@ elseif ($_REQUEST['act'] == 'check')
     elseif ($account['process_type'] == 2)
     {
         $process_type = '贷款';
+        $smarty->assign('action_link',  array('text' => '贷款申请列表',
+    'href'=>'user_account.php?act=list&' . list_link_postfix().'&usertype=1&process_type=2'));
+        $smarty->assign('process_type1', $account['process_type']);
+    }
+    elseif($account['process_type'] == 4)
+    {
+        $process_type = $_LANG['surplus_type_4'];
+        $smarty->assign('action_link',  array('text' => '区域经理工资提现列表',
+    'href'=>'user_account.php?act=list&' . list_link_postfix().'&usertype=7&process_type=4'));
+        $smarty->assign('process_type1', $account['process_type']);
     }
     else
     {
         $process_type = $_LANG['surplus_type_3'];
+        $smarty->assign('action_link',  array('text' => '区域经理佣金提现列表',
+    'href'=>'user_account.php?act=list&' . list_link_postfix().'&usertype=7&process_type=3'));
+        $smarty->assign('process_type1', $account['process_type']);
+
     }
 
     $sql = "SELECT user_name FROM " .$ecs->table('users'). " WHERE user_id = '$account[user_id]'";
@@ -322,18 +348,10 @@ elseif ($_REQUEST['act'] == 'check')
     $smarty->assign('surplus',      $account);
     $smarty->assign('process_type', $process_type);
 
+    $smarty->assign('usertype', $usertype);
     $smarty->assign('user_name',    $user_name);
     $smarty->assign('id',           $id);
-    if($account['process_type'] == 2)
-    {
-        $smarty->assign('action_link',  array('text' => '贷款申请',
-    'href'=>'user_account.php?act=list&' . list_link_postfix().'&usertype=1&process_type=2'));
-    }
-    else
-    {
-        $smarty->assign('action_link',  array('text' => $_LANG['09_user_account'],
-    'href'=>'user_account.php?act=list&' . list_link_postfix()));
-    }
+
     
 
     /* 页面显示 */
@@ -353,6 +371,8 @@ elseif ($_REQUEST['act'] == 'action')
     $id         = isset($_POST['id'])         ? intval($_POST['id'])             : 0;
     $is_paid    = isset($_POST['is_paid'])    ? intval($_POST['is_paid'])        : 0;
     $admin_note = isset($_POST['admin_note']) ? trim($_POST['admin_note'])       : '';
+    $usertype = isset($_POST['usertype']) ? trim($_POST['usertype'])       : 6;
+    $process_type = isset($_POST['process_type']) ? trim($_POST['process_type'])       : '';
 
     /* 如果参数不合法，返回 */
     if ($id == 0 || empty($admin_note))
@@ -411,7 +431,7 @@ elseif ($_REQUEST['act'] == 'action')
 
         /* 提示信息 */
         $link[0]['text'] = $_LANG['back_list'];
-        $link[0]['href'] = 'user_account.php?act=list&' . list_link_postfix();
+        $link[0]['href'] = 'user_account.php?act=list&' . list_link_postfix().'&usertype='.$usertype.'&process_type='.$process_type;
 
         sys_msg($_LANG['attradd_succed'], 0, $link);
     }
@@ -518,7 +538,7 @@ function account_list($usertype=6)
             $filter['keywords'] = json_str_iconv($filter['keywords']);
         }
 
-        $filter['process_type'] = isset($_REQUEST['process_type']) ? intval($_REQUEST['process_type']) : -1;
+        $filter['process_type'] = !empty($_REQUEST['process_type']) ? intval($_REQUEST['process_type']) : -1;
         $filter['payment'] = empty($_REQUEST['payment']) ? '' : trim($_REQUEST['payment']);
         $filter['is_paid'] = isset($_REQUEST['is_paid']) ? intval($_REQUEST['is_paid']) : -1;
         $filter['sort_by'] = empty($_REQUEST['sort_by']) ? 'add_time' : trim($_REQUEST['sort_by']);
@@ -526,7 +546,7 @@ function account_list($usertype=6)
         $filter['start_date'] = empty($_REQUEST['start_date']) ? '' : local_strtotime($_REQUEST['start_date']);
         $filter['end_date'] = empty($_REQUEST['end_date']) ? '' : (local_strtotime($_REQUEST['end_date']) + 86400);
         $usertype = isset($_REQUEST['usertype']) ? intval($_REQUEST['usertype']) : 6;
-// echo $usertype;die;
+// echo $filter['process_type'];die;
         $where = " WHERE 1 ";
         if ($filter['user_id'] > 0)
         {
@@ -536,7 +556,7 @@ function account_list($usertype=6)
         {
             $where .= " AND ua.process_type = '$filter[process_type]' ";
         }
-        elseif($filter['process_type'] == 3)
+        elseif($filter['process_type'] == 3 )
         {
             $where .= " AND ua.process_type = '$filter[process_type]'" ;
         }
@@ -584,7 +604,7 @@ function account_list($usertype=6)
             $GLOBALS['ecs']->table('users'). ' AS u ON ua.user_id = u.user_id'. 
             ' LEFT JOIN' . $GLOBALS['ecs']->table('idcard'). 'AS i ON ua.user_id = i.uid'.
             $where . "ORDER by " . $filter['sort_by'] . " " .$filter['sort_order']. " LIMIT ".$filter['start'].", ".$filter['page_size'];
-
+// echo $sql;die;
         $filter['keywords'] = stripslashes($filter['keywords']);
         
 

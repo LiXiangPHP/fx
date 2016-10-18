@@ -138,6 +138,7 @@ $_LANG['06_stats'] = '报表统计';
 $_LANG['07_content'] = '文章管理';
 $_LANG['08_members'] = '会员管理';
 $_LANG['09_shop'] = '商户管理';
+$_LANG['17_company'] = '公司管理';
 $_LANG['10_priv_admin'] = '权限管理';
 $_LANG['11_system'] = '系统设置';
 $_LANG['12_template'] = '模板管理';
@@ -145,12 +146,22 @@ $_LANG['13_backup'] = '数据库管理';
 $_LANG['14_sms'] = '短信管理';
 $_LANG['15_rec'] = '推荐管理';
 $_LANG['16_email_manage'] = '邮件群发管理';
-/*商户管理*/
 
+
+$_LANG['02_manager_list'] = '区域经理列表';
+$_LANG['03_manager_account'] = '区域经理佣金提现';
+$_LANG['04_manager_pay'] = '区域经理工资提现';
+$_LANG['05_company_shop'] = '公司邀请商家列表';
+$_LANG['06_company_user'] = '公司邀请会员列表';
+$_LANG['07_company_point'] = '公司积分明细';
+
+
+/*商户管理*/
 $_LANG['02_shop_list'] = '商户列表';
 $_LANG['03_shop_account'] = '商户提现申请';
 $_LANG['04_shop_loan'] = '商户贷款申请';
 $_LANG['05_shop_order'] = '商户做单申请';
+
 /* 商品管理 */
 $_LANG['01_goods_list'] = '商品列表';
 $_LANG['02_goods_add'] = '添加新商品';
