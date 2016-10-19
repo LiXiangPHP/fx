@@ -48,7 +48,7 @@
     <td align="right" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
     <td align="right" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
     {if $is_sj}
-    <td align="center" valign="top" nowrap="nowrap">{$lang.os.$order.order_status},{$lang.ps.$order.pay_status}</td>
+    <td align="center" valign="top" nowrap="nowrap">已提交,{$lang.os.$order.order_status},{$lang.ps.$order.pay_status}</td>
     {else}
     <td align="center" valign="top" nowrap="nowrap">{$lang.os.$order.order_status},{$lang.ps.$order.pay_status},{$lang.ss.$order.shipping_status}</td>
     {/if}
