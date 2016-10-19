@@ -49,7 +49,21 @@ if ($_REQUEST['act'] == 'list')
         $user_list = user_list($usertype);
     }
     // echo $usertype;die;
-    
+    // 
+    foreach ($user_list['user_list'] as $k => $v) {
+        $sql = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_cgd]'";
+        $sql1 = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_city1]'";
+        $sql2 = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_city2]'";
+        $qu = $db->getAll($sql);
+        $shi = $db->getAll($sql2);
+        $sheng = $db->getAll($sql1);
+        // print_r($qu);
+        $user_list['user_list'][$k]['qu'] = $qu[0]['f_title'];
+        $user_list['user_list'][$k]['shi'] = $shi[0]['f_title'];
+        $user_list['user_list'][$k]['sheng'] = $sheng[0]['f_title'];
+        
+    }
+// print_r($user_list['user_list']);die;
     $smarty->assign('user_list',    $user_list['user_list']);
     $smarty->assign('filter',       $user_list['filter']);
     $smarty->assign('record_count', $user_list['record_count']);
@@ -892,7 +906,7 @@ function user_list($usertype = 6)
 
         /* 分页大小 */
         $filter = page_and_size($filter);
-        $sql = "SELECT user_id, user_name, email, is_validated, user_money, frozen_money, rank_points, pay_points, reg_time ".
+        $sql = "SELECT user_id, user_name, email, is_validated, user_money, frozen_money, rank_points, pay_points, reg_time ,Field_cgd,Field_city1,Field_city2".
                 " FROM " . $GLOBALS['ecs']->table('users') . $ex_where .
                 " ORDER by " . $filter['sort_by'] . ' ' . $filter['sort_order'] .
                 " LIMIT " . $filter['start'] . ',' . $filter['page_size'];
