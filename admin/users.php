@@ -61,6 +61,7 @@ if ($_REQUEST['act'] == 'list')
     if($usertype == 1)
     {
         $smarty->assign('ur_here',      "商户列表");
+        $smarty->assign('action_link',  array('text' => '添加商户', 'href'=>'users.php?act=add&usertype=1'));
         $smarty->display('shop_list.htm');
     }
     if($usertype == 6)
@@ -75,6 +76,7 @@ if ($_REQUEST['act'] == 'list')
     if($usertype == 7)
     {
         $smarty->assign('ur_here',      "区域经理列表");
+        $smarty->assign('action_link',  array('text' => '添加区域经理', 'href'=>'users.php?act=add&usertype=7'));
         $smarty->display('manager_list.htm');
     }
 }
@@ -108,7 +110,7 @@ elseif ($_REQUEST['act'] == 'add')
 {
     /* 检查权限 */
     admin_priv('users_manage');
-
+    $usertype = empty($_GET['usertype']) ? 6 : trim($_GET['usertype']);
     $user = array(  'rank_points'   => $_CFG['register_points'],
                     'pay_points'    => $_CFG['register_points'],
                     'sex'           => 0,
@@ -120,13 +122,31 @@ elseif ($_REQUEST['act'] == 'add')
     $smarty->assign('extend_info_list', $extend_info_list);
 
     $smarty->assign('ur_here',          $_LANG['04_users_add']);
-    $smarty->assign('action_link',      array('text' => $_LANG['03_users_list'], 'href'=>'users.php?act=list'));
+
     $smarty->assign('form_action',      'insert');
     $smarty->assign('user',             $user);
     $smarty->assign('special_ranks',    get_rank_list(true));
 
     assign_query_info();
-    $smarty->display('user_info.htm');
+    if($usertype == 6)
+    {
+        $smarty->assign('action_link',      array('text' => $_LANG['03_users_list'], 'href'=>'users.php?act=list'));
+        $smarty->display('user_info.htm');
+            
+    }
+    if($usertype == 1)
+    {
+        $smarty->assign('usertype',    $usertype);
+        $smarty->assign('action_link',      array('text' => '商户列表', 'href'=>'users.php?act=list&usertype=1'));
+        $smarty->display('shop_info.htm');
+    }
+    if($usertype == 7)
+    {
+        $smarty->assign('usertype',    $usertype);
+        $smarty->assign('action_link',      array('text' => '区域经理列表', 'href'=>'users.php?act=list&usertype=7'));
+        $smarty->display('user_info.htm');
+    }
+    
 }
 
 /*------------------------------------------------------ */
@@ -134,55 +154,111 @@ elseif ($_REQUEST['act'] == 'add')
 /*------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'insert')
 {
+    // print_r($_FILES);die;
     /* 检查权限 */
     admin_priv('users_manage');
     $username = empty($_POST['username']) ? '' : trim($_POST['username']);
     $pusername = empty($_POST['pusername']) ? '' : trim($_POST['pusername']);
     $password = empty($_POST['password']) ? '' : trim($_POST['password']);
+    $usertype = empty($_POST['usertype']) ? 6 : trim($_POST['usertype']);
+
     $sex = empty($_POST['sex']) ? 0 : intval($_POST['sex']);
     $sex = in_array($sex, array(0, 1, 2)) ? $sex : 0;
     $birthday = $_POST['birthdayYear'] . '-' .  $_POST['birthdayMonth'] . '-' . $_POST['birthdayDay'];
     $rank = empty($_POST['user_rank']) ? 0 : intval($_POST['user_rank']);
     $credit_line = empty($_POST['credit_line']) ? 0 : floatval($_POST['credit_line']);
-    $sql = 'SELECT user_id FROM ' . $ecs->table('users') . ' WHERE user_name = '.$pusername;
-    $parent_id = $db->getONE($sql);
-
-
-    $users =& init_users();
-
-    if (!$users->add_user($username, $password, $parent_id))
+    if($pusername)
     {
-        /* 插入会员数据失败 */
-        if ($users->error == ERR_INVALID_USERNAME)
-        {
-            $msg = $_LANG['username_invalid'];
-        }
-        elseif ($users->error == ERR_USERNAME_NOT_ALLOW)
-        {
-            $msg = $_LANG['username_not_allow'];
-        }
-        elseif ($users->error == ERR_USERNAME_EXISTS)
-        {
-            $msg = $_LANG['username_exists'];
-        }
-        elseif ($users->error == ERR_INVALID_EMAIL)
-        {
-            $msg = $_LANG['email_invalid'];
-        }
-        elseif ($users->error == ERR_EMAIL_NOT_ALLOW)
-        {
-            $msg = $_LANG['email_not_allow'];
-        }
-        elseif ($users->error == ERR_EMAIL_EXISTS)
-        {
-            $msg = $_LANG['email_exists'];
-        }
-        else
-        {
-            //die('Error:'.$users->error_msg());
-        }
-        sys_msg($msg, 1);
+        $sql = 'SELECT user_id FROM ' . $ecs->table('users') . ' WHERE user_name = '.$pusername;
+        $parent_id = $db->getONE($sql);
     }
+    $users =& init_users();
+    if($usertype == 1)
+    {
+        foreach ($_FILES as $k => $v) {
+            if($v['name'])
+            {
+                $h = substr(strrchr($v["name"], '.'), 1);
+                if ($v["error"] > 0)
+                {
+                   echo "图片上传错误";die;
+                }
+                else
+                {
+                    $name = time().".".$h;
+                    move_uploaded_file($v["tmp_name"],ROOT_PATH."/upload/" . $name);
+                    $$k = "upload/" . $name;
+                    
+                }  
+            }
+            
+            
+        }
+        $Field_realname = empty($_POST['Field_realname']) ? '' : trim($_POST['Field_realname']);
+        $Field_memo = empty($_POST['Field_memo']) ? '' : trim($_POST['Field_memo']);
+        $Field_address = empty($_POST['Field_address']) ? '' : trim($_POST['Field_address']);
+        $mobile_phone = empty($_POST['mobile_phone']) ? '' : trim($_POST['mobile_phone']);
+        $qq = empty($_POST['qq']) ? '' : trim($_POST['qq']);
+        $Field_contract = empty($_POST['Field_contract']) ? '' : trim($_POST['Field_contract']);
+        $Field_lx = empty($_POST['Field_lx']) ? '' : trim($_POST['Field_lx']);
+        $Field_ctbs = empty($_POST['Field_ctbs']) ? '' : trim($_POST['Field_ctbs']);
+        $Field_zzs = empty($_POST['Field_zzs']) ? '' : trim($_POST['Field_zzs']);
+        $sql = "SELECT user_name  FROM " .  $ecs->table('users').
+               " WHERE user_name = '$username'";
+        if ($db->getOne($sql, true) > 0)
+        {
+             sys_msg('手机号已存在', 1);
+        }
+        $password = md5($password);
+        $fields = array('user_name', 'parent_id', 'password','user_type','Field_realname','Field_memo','Field_address','mobile_phone','qq','Field_contract','Field_lx','Field_ctbs','Field_zzs','image1','image2','image3','image4','image5','image6','image7','image8');
+        $values = array($username, $parent_id, $password,$usertype,$Field_realname,$Field_memo,$Field_address,$mobile_phone,$qq,$Field_contract,$Field_lx,$Field_ctbs,$Field_zzs,$image1,$image2,$image3,$image4,$image5,$image6,$image7,$image8);
+        $sql = "INSERT INTO " . $ecs->table('users').
+               " (" . implode(',', $fields) . ")".
+               " VALUES ('" . implode("', '", $values) . "')";
+
+        $db->query($sql);
+
+            
+    }
+    else
+    {
+         
+
+        if (!$users->add_user($username, $password, $parent_id,$usertype))
+        {
+            /* 插入会员数据失败 */
+            if ($users->error == ERR_INVALID_USERNAME)
+            {
+                $msg = $_LANG['username_invalid'];
+            }
+            elseif ($users->error == ERR_USERNAME_NOT_ALLOW)
+            {
+                $msg = $_LANG['username_not_allow'];
+            }
+            elseif ($users->error == ERR_USERNAME_EXISTS)
+            {
+                $msg = $_LANG['username_exists'];
+            }
+            elseif ($users->error == ERR_INVALID_EMAIL)
+            {
+                $msg = $_LANG['email_invalid'];
+            }
+            elseif ($users->error == ERR_EMAIL_NOT_ALLOW)
+            {
+                $msg = $_LANG['email_not_allow'];
+            }
+            elseif ($users->error == ERR_EMAIL_EXISTS)
+            {
+                $msg = '手机号已存在';
+            }
+            else
+            {
+                //die('Error:'.$users->error_msg());
+            }
+            sys_msg($msg, 1);
+        }
+    }
+   
 
     /* 注册送积分 */
     if (!empty($GLOBALS['_CFG']['register_points']))
@@ -219,8 +295,8 @@ elseif ($_REQUEST['act'] == 'insert')
     $other['user_rank']  = $rank;
     $other['sex']        = $sex;
     $other['birthday']   = $birthday;
-    $other['reg_time'] = local_strtotime(local_date('Y-m-d H:i:s'));
-
+    $other['reg_time'] = date('Y-m-d H:i:s');
+    $other['is_validated'] = 1;
     $other['msn'] = isset($_POST['extend_field1']) ? htmlspecialchars(trim($_POST['extend_field1'])) : '';
     $other['qq'] = isset($_POST['extend_field2']) ? htmlspecialchars(trim($_POST['extend_field2'])) : '';
     $other['office_phone'] = isset($_POST['extend_field3']) ? htmlspecialchars(trim($_POST['extend_field3'])) : '';
@@ -233,8 +309,20 @@ elseif ($_REQUEST['act'] == 'insert')
     admin_log($_POST['username'], 'add', 'users');
 
     /* 提示信息 */
-    $link[] = array('text' => $_LANG['go_back'], 'href'=>'users.php?act=list');
-    sys_msg(sprintf($_LANG['add_success'], htmlspecialchars(stripslashes($_POST['username']))), 0, $link);
+    if($usertype == 6)
+    {
+        $link[] = array('text' => $_LANG['go_back'], 'href'=>'users.php?act=list');
+
+    }
+    if($usertype == 1)
+    {
+        $link[] = array('text' => $_LANG['go_back'], 'href'=>'users.php?act=list&usertype=1');
+    }
+    if($usertype == 7)
+    {
+        $link[] = array('text' => $_LANG['go_back'], 'href'=>'users.php?act=list&usertype=7');
+    }
+    sys_msg(sprintf('账号已添加', htmlspecialchars(stripslashes($_POST['username']))), 0, $link);
 
 }
 

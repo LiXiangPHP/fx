@@ -184,7 +184,7 @@ class integrate
      *
      * @return int
      */
-    function add_user($username, $password, $parent_id, $gender = -1, $bday = 0, $reg_date=0, $md5password='')
+    function add_user($username, $password, $parent_id,$usertype=6, $gender = -1, $bday = 0, $reg_date=0, $md5password='')
     {
 
         /* 将用户添加到整合方 */
@@ -216,8 +216,8 @@ class integrate
             $post_password = $this->compile_password(array('password'=>$password));
         }
 
-        $fields = array($this->field_name, 'parent_id', $this->field_pass);
-        $values = array($post_username, $parent_id, $post_password);
+        $fields = array($this->field_name, 'parent_id', $this->field_pass,'user_type');
+        $values = array($post_username, $parent_id, $post_password,$usertype);
 
         if ($gender > -1)
         {

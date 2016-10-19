@@ -37,8 +37,8 @@ $_LANG['surplus_type_4'] = '工资';
 $_LANG['admin_user'] = '操作员';
 
 $_LANG['status'] = '到款状态';
-$_LANG['confirm'] = '已完成';
-$_LANG['unconfirm'] = '未确认';
+$_LANG['confirm'] = '已打款';
+$_LANG['unconfirm'] = '确认';
 $_LANG['cancel'] = '取消';
 
 $_LANG['please_select'] = '请选择...';
