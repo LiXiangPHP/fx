@@ -72,7 +72,7 @@
 <!--
 listTable.recordCount = {$record_count};
 listTable.pageCount = {$page_count};
-
+listTable.filter['usertype'] = 1;
 {foreach from=$filter item=item key=key}
 listTable.filter.{$key} = '{$item}';
 {/foreach}

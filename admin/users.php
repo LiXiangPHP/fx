@@ -99,12 +99,83 @@ elseif($_REQUEST['act'] == 'point')
      $smarty->assign('ur_here',      "公司积分明细");
     $smarty->display('point.htm');
 }
+elseif($_REQUEST['act'] == 'f_list')
+{
+
+    $fid = $_GET['fid'];
+    $usertype = $_GET['usertype'];
+    $user_list['user_list'] = array();
+    if($usertype == 1)
+    {
+        $smarty->assign('ur_here',      '下属商家列表');
+    }
+    else
+    {
+        $smarty->assign('ur_here',      '下属会员列表');
+    }
+    if($fid)
+    {
+        $sql = "SELECT * FROM " . $ecs->table('users') . " WHERE Field_cgd = $fid and user_type = $usertype";
+        $user_list = $db->getAll($sql);
+        foreach ($user_list as $k => $v) {
+        $sql = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_cgd]'";
+        $sql1 = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_city1]'";
+        $sql2 = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_city2]'";
+        $qu = $db->getAll($sql);
+        $shi = $db->getAll($sql2);
+        $sheng = $db->getAll($sql1);
+        // print_r($qu);
+        $user_list[$k]['qu'] = $qu[0]['f_title'];
+        $user_list[$k]['shi'] = $shi[0]['f_title'];
+        $user_list[$k]['sheng'] = $sheng[0]['f_title'];
+        
+    }
+    }
+   else
+   {
+        $user_list=array();
+   }
+    
+    $smarty->assign('user_list',    $user_list);
+    $smarty->assign('record_count', $user_list['record_count']);
+    $smarty->assign('full_page',    1);
+    $smarty->assign('action_link',  array('text' => '返回区域经理列表', 'href'=>"users.php?act=list&usertype=7"));
+
+    assign_query_info();
+    $smarty->display('f_list.htm');
+}
 /*------------------------------------------------------ */
 //-- ajax返回用户列表
 /*------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'query')
 {
-    $user_list = user_list();
+    $usertype = empty($_POST['usertype']) ? 6 : trim($_POST['usertype']);
+    $pid = empty($_GET['pid']) ? null : trim($_GET['pid']);
+    if($pid)
+    {
+        $user_list = user_list($usertype,$pid);
+    }
+    else
+    {
+        $user_list = user_list($usertype);
+    }
+    // echo $usertype;die;
+    // 
+    foreach ($user_list['user_list'] as $k => $v) {
+        $sql = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_cgd]'";
+        $sql1 = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_city1]'";
+        $sql2 = "SELECT f_title FROM ".$ecs->table('firste_city')." where fid = '$v[Field_city2]'";
+        $qu = $db->getAll($sql);
+        $shi = $db->getAll($sql2);
+        $sheng = $db->getAll($sql1);
+        // print_r($qu);
+        $user_list['user_list'][$k]['qu'] = $qu[0]['f_title'];
+        $user_list['user_list'][$k]['shi'] = $shi[0]['f_title'];
+        $user_list['user_list'][$k]['sheng'] = $sheng[0]['f_title'];
+        
+    }
+
+
 
     $smarty->assign('user_list',    $user_list['user_list']);
     $smarty->assign('filter',       $user_list['filter']);

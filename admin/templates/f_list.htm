@@ -3,12 +3,7 @@
 {include file="pageheader.htm"}
 {insert_scripts files="../js/utils.js,listtable.js"}
 
-<div class="form-div">
-  <form action="javascript:searchUser()" name="searchForm">
 
-    &nbsp;手机号 &nbsp;<input type="text" name="keyword" /> <input type="submit" value="{$lang.button_search}" />
-  </form>
-</div>
 
 <form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
 
@@ -48,10 +43,6 @@
       <a href="order.php?act=list&user_id={$user.user_id}" title="{$lang.view_order}"><img src="images/icon_view.gif" border="0" height="16" width="16" /></a>
       <a href="account_log.php?act=list&user_id={$user.user_id}" title="{$lang.view_deposit}"><img src="images/icon_account.gif" border="0" height="16" width="16" /></a>
       <a href="javascript:confirm_redirect('{if $user.user_money ne 0}{$lang.still_accounts}{/if}{$lang.remove_confirm}', 'users.php?act=remove&id={$user.user_id}')" title="{$lang.remove}"><img src="images/icon_drop.gif" border="0" height="16" width="16" /></a>
-      [<a href="users.php?act=aff_list&auid={$user.user_id}">推荐会员</a>]
-
-     [<a href="users.php?act=f_list&fid={$user.Field_cgd}&usertype=1">下属商家</a>]
-     [<a href="users.php?act=f_list&fid={$user.Field_cgd}&usertype=6">下属会员</a>]
     </td>
   </tr>
   {foreachelse}
@@ -61,9 +52,7 @@
       <td colspan="2">
       <input type="hidden" name="act" value="batch_remove" />
       <input type="submit" id="btnSubmit" value="{$lang.button_remove}" disabled="true" class="button" /></td>
-      <td align="right" nowrap="true" colspan="8">
-      {include file="page.htm"}
-      </td>
+
   </tr>
 </table>
 
@@ -75,7 +64,7 @@
 <!--
 listTable.recordCount = {$record_count};
 listTable.pageCount = {$page_count};
-listTable.filter['usertype'] = 7;
+
 {foreach from=$filter item=item key=key}
 listTable.filter.{$key} = '{$item}';
 {/foreach}
@@ -94,7 +83,7 @@ onload = function()
 function searchUser()
 {
     listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
-    listTable.filter['usertype'] = 7;
+    listTable.filter['usertype'] = 1;
     listTable.loadList();
 }
 
