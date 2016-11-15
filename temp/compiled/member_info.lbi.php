@@ -8,7 +8,7 @@
 
 <?php else: ?>
 <span>您好，欢迎光临本站！</span>
-<a href="user.php">登录</a><a href="user.php?act=register">注册</a> 
+<a href="user.php">登录</a><a href="user.php?act=register">注册</a> <a href="user.php?act=register&usertype=1">商家注册</a> 
 <?php endif; ?>
 
 

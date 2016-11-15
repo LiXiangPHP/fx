@@ -27,6 +27,8 @@
     <th><?php echo $this->_var['lang']['user_money']; ?></th>
     <th><?php echo $this->_var['lang']['frozen_money']; ?></th>
     <th><?php echo $this->_var['lang']['pay_points']; ?></th>
+    <th>地区</th>
+
     <th><a href="javascript:listTable.sort('reg_time'); "><?php echo $this->_var['lang']['reg_date']; ?></a><?php echo $this->_var['sort_reg_time']; ?></th>
     <th><?php echo $this->_var['lang']['handler']; ?></th>
   <tr>
@@ -40,6 +42,7 @@
     <td><?php echo $this->_var['user']['user_money']; ?></td>
     <td><?php echo $this->_var['user']['frozen_money']; ?></td>
     <td><?php echo $this->_var['user']['pay_points']; ?></td>
+    <td><?php echo $this->_var['user']['sheng']; ?><?php echo $this->_var['user']['shi']; ?><?php echo $this->_var['user']['qu']; ?></td>
     <td align="center"><?php echo $this->_var['user']['reg_time']; ?></td>
     <td align="center">
       <a href="users.php?act=edit&id=<?php echo $this->_var['user']['user_id']; ?>" title="<?php echo $this->_var['lang']['edit']; ?>"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>
@@ -47,6 +50,7 @@
       <a href="order.php?act=list&user_id=<?php echo $this->_var['user']['user_id']; ?>" title="<?php echo $this->_var['lang']['view_order']; ?>"><img src="images/icon_view.gif" border="0" height="16" width="16" /></a>
       <a href="account_log.php?act=list&user_id=<?php echo $this->_var['user']['user_id']; ?>" title="<?php echo $this->_var['lang']['view_deposit']; ?>"><img src="images/icon_account.gif" border="0" height="16" width="16" /></a>
       <a href="javascript:confirm_redirect('<?php if ($this->_var['user']['user_money'] != 0): ?><?php echo $this->_var['lang']['still_accounts']; ?><?php endif; ?><?php echo $this->_var['lang']['remove_confirm']; ?>', 'users.php?act=remove&id=<?php echo $this->_var['user']['user_id']; ?>')" title="<?php echo $this->_var['lang']['remove']; ?>"><img src="images/icon_drop.gif" border="0" height="16" width="16" /></a>
+      [<a href="users.php?act=aff_list&auid=<?php echo $this->_var['user']['user_id']; ?>">查看推荐名单</a>]
     </td>
   </tr>
   <?php endforeach; else: ?>
@@ -70,7 +74,7 @@
 <!--
 listTable.recordCount = <?php echo $this->_var['record_count']; ?>;
 listTable.pageCount = <?php echo $this->_var['page_count']; ?>;
-
+listTable.filter['usertype'] = 1;
 <?php $_from = $this->_var['filter']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('key', 'item');if (count($_from)):
     foreach ($_from AS $this->_var['key'] => $this->_var['item']):
 ?>

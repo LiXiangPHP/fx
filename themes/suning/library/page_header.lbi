@@ -394,7 +394,7 @@ onClick="window.external.AddFavorite(location.href,document.title);">收藏</a>
  
  <!-- {/foreach} -->
  
- 
+  <a class="aa" href="../busers.php"  {if $nav.active eq 1} id="aa_on" {/if}>商户列表 </a>
  
 
  

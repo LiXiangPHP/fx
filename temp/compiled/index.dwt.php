@@ -316,6 +316,7 @@ changePrice();
 <div class="cat_box cat_box_4">
 <?php echo $this->fetch('library/cat_4.lbi'); ?>
 
+<?php $this->assign('cat_goods',$this->_var['cat_goods_1']); ?><?php $this->assign('goods_cat',$this->_var['goods_cat_1']); ?><?php echo $this->fetch('library/cat_goods.lbi'); ?>
 
 
  
@@ -335,6 +336,7 @@ changePrice();
 <div class="cat_box  cat_box_5">
 <?php echo $this->fetch('library/cat_5.lbi'); ?>
 
+<?php $this->assign('cat_goods',$this->_var['cat_goods_1']); ?><?php $this->assign('goods_cat',$this->_var['goods_cat_1']); ?><?php echo $this->fetch('library/cat_goods.lbi'); ?>
 
 
  

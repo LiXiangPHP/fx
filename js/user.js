@@ -373,7 +373,27 @@ function is_registered( username )
     }
     Ajax.call( 'user.php?act=is_registered', 'username=' + username, registed_callback , 'GET', 'TEXT', true, true );
 }
-
+function sms()
+{
+  var username = document.getElementById('username').value ;
+  if(username)
+  {
+    Ajax.call( 'user.php?act=send_sms', 'username=' + username, sms_callback , 'POST', 'TEXT', true, true );
+  }
+  else
+  {
+    alert("请输入手机号");
+  }
+}
+function sms_callback(result)
+{
+  if(result == 1)
+  {
+    alert('发送成功')
+  }else{
+    alert('发送失败')
+  }
+}
 
 
 function registed_callback(result)
@@ -426,6 +446,8 @@ function check_email_callback(result)
     document.forms['formUser'].elements['Submit'].disabled = 'disabled';
   }
 }
+
+
 
 /* *
  * 处理注册用户

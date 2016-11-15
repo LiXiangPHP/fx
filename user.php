@@ -30,7 +30,7 @@ $back_act='';
 
 // 不需要登录的操作或自己验证是否登录（如ajax处理）的act
 $not_login_arr =
-array('login','act_login','register','act_register','act_edit_password','get_password','send_pwd_email','password', 'signin', 'add_tag', 'collect', 'return_to_cart', 'logout', 'email_list', 'validate_email', 'send_hash_mail', 'order_query', 'is_registered', 'check_email','clear_history','qpassword_name', 'get_passwd_question', 'check_answer', 'oath' , 'oath_login', 'other_login');
+array('login','act_login','register','act_register','act_edit_password','get_password','send_pwd_email','password', 'signin', 'add_tag', 'collect', 'return_to_cart', 'logout', 'email_list', 'validate_email', 'send_hash_mail', 'order_query', 'is_registered', 'check_email','clear_history','qpassword_name', 'get_passwd_question', 'check_answer', 'oath' , 'oath_login', 'other_login','send_sms');
 
 /* 显示页面的action列表 */
 $ui_arr = array('register', 'login', 'profile', 'order_list', 'order_detail', 'address_list', 'collection_list',
@@ -108,6 +108,29 @@ if ($action == 'default')
     $smarty->assign('prompt',      get_user_prompt($user_id));
     $smarty->display('user_clips.dwt');
 }
+if ($action == 'send_sms')
+{
+    $code = rand(1000,9999);
+    $msg = "您本次验证码为".$code."请在5分钟内使用";
+    session_start();
+    $_SESSION['code'] = $code;
+    include_once(ROOT_PATH .'includes/SendSmsHttp.class.php');
+
+    $sendSms = new SendSmsHttp();
+    $sendSms->SpCode = '235309';
+    $sendSms->LoginName = 'js_htr';
+    $sendSms->Password = 'jgf852555';
+    $sendSms->MessageContent = $msg;
+    $sendSms->UserNumber = $_POST['username'];
+    $sendSms->SerialNumber = '';
+    $sendSms->ScheduleTime = '';
+    $sendSms->ExtendAccessNum = '';
+    $sendSms->f = '';
+    $res = $sendSms->send();
+    echo $res ? 1 : $sendSms->errorMsg;
+ 
+ 
+}
 
 /* 显示会员注册界面 */
 if ($action == 'register')
@@ -116,7 +139,10 @@ if ($action == 'register')
     {
         $back_act = strpos($GLOBALS['_SERVER']['HTTP_REFERER'], 'user.php') ? './index.php' : $GLOBALS['_SERVER']['HTTP_REFERER'];
     }
-
+    if(isset($_GET['usertype']))
+    {
+        $smarty->assign('usertype', 1);
+    }
     /* 取出注册扩展字段 */
     $sql = 'SELECT * FROM ' . $ecs->table('reg_fields') . ' WHERE type < 2 AND display = 1 ORDER BY dis_order, id';
     $extend_info_list = $db->getAll($sql);

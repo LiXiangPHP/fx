@@ -411,7 +411,7 @@ if ($this->_foreach['nav_middle_list']['total'] > 0):
  <?php endforeach; endif; unset($_from); ?><?php $this->pop_vars();; ?>
  
  
- 
+ <a class="aa" href="busers.php"  <?php if ($this->_var['nav']['active'] == 1): ?> id="aa_on" <?php endif; ?>>商户列表 </a>
 
  
  </div>

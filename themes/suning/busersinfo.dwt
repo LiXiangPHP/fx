@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=7" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link href="style.css" rel="stylesheet" type="text/css" />
+ 
+{* 包含脚本文件 *}
+{insert_scripts files='common.js'}
+<script src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    var count = $(".shuxin_tab").length;
+    for(i=0; i<count; i++)
+    {
+        $(".shuxin_tab:eq("+i+") .tr_bg:odd").css('background','#eff3ff');
+    }
+    //$("#shuxin tr:not(.tr_bg):odd").css;
+})
+
+
+function $id(element) {
+  return document.getElementById(element);
+}
+
+//切屏--是按钮，_v是内容平台，_h是内容库
+function reg(str){
+  var bt=$id(str+"_b").getElementsByTagName("h2");
+  for(var i=0;i<bt.length;i++){
+    bt[i].subj=str;
+    bt[i].pai=i;
+    bt[i].style.cursor="pointer";
+    bt[i].onclick=function(){
+      $id(this.subj+"_v").innerHTML=$id(this.subj+"_h").getElementsByTagName("blockquote")[this.pai].innerHTML;
+      for(var j=0;j<$id(this.subj+"_b").getElementsByTagName("h2").length;j++){
+        var _bt=$id(this.subj+"_b").getElementsByTagName("h2")[j];
+        var ison=j==this.pai;
+        _bt.className=(ison?"":"h2bg");
+      }
+    }
+  }
+  $id(str+"_h").className="none";
+  $id(str+"_v").innerHTML=$id(str+"_h").getElementsByTagName("blockquote")[0].innerHTML;
+}
+
+function changeAtt(t) {
+t.lastChild.checked='checked';
+for (var i = 0; i<t.parentNode.childNodes.length;i++) {
+        if (t.parentNode.childNodes[i].className == 'cattsel') {
+            t.parentNode.childNodes[i].className = '';
+        }
+    }
+t.className = "cattsel";
+changePrice();
+}
+</script>
+ <SCRIPT type=text/javascript>
+window.pageConfig={
+    compatible:true,
+    navId:"home"
+};
+</SCRIPT>
+</head>
+
+<body>
+
+ 
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+ 
+  <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+  <script src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/script.js" ></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.jqzoom.js"></script>
+ 
+<script type="text/javascript" language="javascript">
+var GB_ANIMATION = true;
+$(document).ready(function(){
+    $(".jqzoom").jqzoom();
+    $("a.greybox").click(function(){
+          var t = this.title || $(this).text() || this.href;
+          GB_show(t,this.href,600,800);
+          return false;
+        });
+});
+</script>
+
+<div class="block950 clearfix">
+<div id="goodsInfo" class="clearfix">
+
+<div class="goods_info">
+                        <div class="polo_gallery f_l">
+                            <!-- #BeginLibraryItem "/library/buserimg.lbi" --><!-- #EndLibraryItem --> 
+                        </div>
+                        <div class="goods_pics_polo ">
+                            <div class="goods_big_img" style="position:relative;">
+                              <a href="{$goods.image1}" class="jqzoom" id="picbox" title="{$goods.goods_name}">                           
+                              <img src="{$goods.image1}" alt="{$goods.Field_zzs|escape:html}" class="goodsimg" id="goods_bimg"  /></a>
+                              </div>
+                              <div class="more_view fix">
+
+</div>
+                              
+                              
+                           
+                         </div>
+                         
+                    </div><!--end goods_info-->
+                 
+     <div class="textInfo">
+       <div class="product_detail ">
+          <h1><span>{$goods.Field_zzs} <em></em></span></h1>
+       
+      
+      </div>  
+  
+     <form action="javascript:addToCart({$goods.goods_id})" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY" >
+         
+      
+   
+      <ul class="ul1">
+      
+      
+      
+
+      
+      
+      
+      <li class="main_price clearfix"  > 
+         
+  <span class="attr"> 商家名称：</span> <span class="sell_price" id="ECS_SHOPPRICE"  style="font-size:16px">{$goods.Field_zzs}</span>
+
+      
+     </li>  
+     
+
+        <li class="clearfix">
+
+      <span class="attr"> 联系人：</span> <span  ><em>{$goods.Field_realname}</em></span>  
+
+       </li>  
+
+       
+     <li class="clearfix">
+     
+        <span class="attr">电话</span>
+        
+        <div class="comments_star">
+<span class="star"> {$goods.mobile_phone}</span>
+</div>
+         
+     
+      </li>  
+           <li class="clearfix">
+     
+        <span class="attr">地址</span>
+        
+        <div class="comments_star">
+<span class="star"> {$goods.Filed_address}</span>
+</div>
+         
+     
+      </li>  
+           <li class="clearfix">
+     
+        <span class="attr">经营范围</span>
+        
+        <div class="comments_star">
+<span class="star"> {$goods.Filed_ctbs}</span>
+</div>
+         
+     
+
+       
+       
+       
+       
+       
+     
+
+
+
+     
+       
+     
+   
+     
+     
+         
+  
+      </ul>
+      
+
+ 
+       
+      </form>
+      
+        
+  </div>  
+  
+  
+  
+  
+  
+<div class="blank"></div>  
+
+  
+<div class="AreaR" style="float:none">
+
+   <div  id="inner" style=" width:960px; background:#FFFFFF; position:relative; z-index:999999999; ">
+      <h3 class="h3_3">
+        <div id="com_b" class="history clearfix">
+        <h2>联系方式</h2>
+        <h2 class="h2bg">商家介绍</h2>
+        
+           
+        </div>
+      </h3>
+      </div>
+
+      
+      <script type="text/javascript">
+var obj11 = document.getElementById("inner");
+var top11 = getTop(obj11);
+var isIE6 = /msie 6/i.test(navigator.userAgent);
+window.onscroll = function(){
+var bodyScrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+if (bodyScrollTop > top11){
+obj11.style.position = (isIE6) ? "absolute" : "fixed";
+obj11.style.top = (isIE6) ? bodyScrollTop + "px" : "0px";
+} else {
+obj11.style.position = "static";
+}
+}
+function getTop(e){
+var offset = e.offsetTop;
+if(e.offsetParent != null) offset += getTop(e.offsetParent);
+return offset;
+}
+</script>
+      <div id="com_v" style="   padding:12px;" ></div>
+      <div id="com_h">
+       <blockquote>
+       <div class="blank"></div>
+        <p class="sell_price" id="ECS_SHOPPRICE"  style="font-size:16px;color:#c00;font-weight:700;">{$goods.Field_zzs}</p>
+        <p >{$goods.Field_address}</p><p >{$goods.mobile_phone}</p>
+
+
+      
+
+        
+       </blockquote>
+
+     
+
+
+  <blockquote>
+     
+     {$goods.Filed_memo}
+  </blockquote>
+
+
+ </div>
+      
+      
+        <script type="text/javascript">
+    <!--
+    reg("com");
+    //-->
+    </script>
+ 
+      <div class="blank"></div>
+      
+      
+      
+ 
+      
+      
+      
+
+
+ 
+<script>
+
+function qq (id) {
+    var str=document.getElementsByName("box[]");
+    if(document.getElementById("goods_id_"+id).checked ==false)
+    {
+        document.getElementById("goods_id_"+id).checked=true;
+    }
+    else
+    {
+        document.getElementById("goods_id_"+id).checked=false;
+    }
+    var start_price = {$goods.shop_price};
+   for(i=0;i<str.length;i++) {
+           if(str[i].type=="checkbox" && str[i].checked) {
+                 start_price = parseFloat(start_price)+parseFloat(str[i].value);
+                }
+    }
+    document.getElementById("show_all_price").innerHTML="￥"+start_price+"元";
+}
+</script>
+ 
+
+
+
+
+
+
+      
+      
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+</div>   
+    
+    
+   </div> 
+    
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<!--end 主体-->
+</body>
+<script type="text/javascript">
+var goods_id = {$goods_id};
+var goodsattr_style = {$cfg.goodsattr_style|default:1};
+var gmt_end_time = {$promote_end_time|default:0};
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var goodsId = {$goods_id};
+var now_time = {$now_time};
+
+<!-- {literal} -->
+onload = function(){
+  changePrice();
+  fixpng();
+  try { onload_leftTime(); }
+  catch (e) {}
+}
+
+/**
+ * 点选可选属性或改变数量时修改商品价格的函数
+ */
+function changePrice()
+{
+  var attr = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+  var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
+
+  Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty, changePriceResponse, 'GET', 'JSON');
+}
+
+/**
+ * 接收返回的信息
+ */
+function changePriceResponse(res)
+{
+  if (res.err_msg.length > 0)
+  {
+    alert(res.err_msg);
+  }
+  else
+  {
+    document.forms['ECS_FORMBUY'].elements['number'].value = res.qty;
+
+    if (document.getElementById('ECS_SHOPPRICE'))
+      document.getElementById('ECS_SHOPPRICE').innerHTML = res.result;
+  }
+}
+<!-- {/literal} -->
+</script>
+</html>
+

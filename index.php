@@ -175,7 +175,6 @@ if (!$smarty->is_cached('index.dwt', $cache_id))
     /* 页面中的动态内容 */
     assign_dynamic('index');
 }
-
 $smarty->display('index.dwt', $cache_id);
 
 /*------------------------------------------------------ */

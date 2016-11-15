@@ -37,7 +37,7 @@
    <form name="formLogin" action="user.php" method="post" onSubmit="return userLogin()" class="form">
         <table width="100%" border="0" align="left" cellpadding="0" cellspacing="0">
           <tr>
-            <td width="22%" align="right">{$lang.label_username}：</td>
+            <td width="22%" align="right">手机号：</td>
             <td width="78%"><input name="username" type="text" size="25" class="inputBg" /></td>
           </tr>
           <tr>
@@ -89,24 +89,29 @@
     <!-- {else} -->
     {insert_scripts files='utils.js'}
 <div class="usBox clearfix"  >
+<!-- {if $usertype eq 1} -->
+<div class="usBox_in_tit"><span>商家注册</span></div>
+<input type="hidden" value="1" name="username" />
+<!--{else}-->
 <div class="usBox_in_tit"><span>用户注册</span></div>
 
+<!--{/if}-->
 <div class="usBox_in ">
 <h2>填写注册信息<em>(*均为必填)</em></h2>
     <form  action="user.php" method="post" name="formUser" onsubmit="return register();" style="background:none"> 
       <table width="100%"  border="0" align="left" cellpadding="5" cellspacing="3" style="background:none">
         <tr>
-          <td width="8%" align="right">{$lang.label_username}：</td>
+          <td width="8%" align="right">手机号：</td>
           <td width="92%">
           <input name="username" type="text" size="25" id="username" onblur="is_registered(this.value);" class="inputBg"/>
             <span id="username_notice" style="color:#FF0000"> *</span>
           </td>
         </tr>
         <tr>
-          <td align="right">{$lang.label_email}：</td>
+          <td align="right">验证码：</td>
           <td>
-          <input name="email" type="text" size="25" id="email" onblur="checkEmail(this.value);"  class="inputBg"/>
-            <span id="email_notice" style="color:#FF0000"> *</span>
+          <input name="email" type="text" size="25" id="email"   class="inputBg" style="width:150px;" />
+          <input  type="button" value="发送验证码" onclick="sms()" style="width:90px;" />
           </td>
         </tr>
         <tr>
@@ -155,7 +160,7 @@
 	<!-- {else} -->
         <tr>
 
-    
+ 
          
 
           <td align="right" <!-- {if $field.is_need} -->id="extend_field{$field.id}i"<!--{/if}-->>{$field.reg_field_name}：
