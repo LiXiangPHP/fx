@@ -93,7 +93,7 @@ window.pageConfig={
             </td>
         </tr>
         <!-- {/if} -->
-		{/foreach}
+    {/foreach}
                 <tr>
                   <td colspan="2" align="center" bgcolor="#FFFFFF"><input name="act" type="hidden" value="act_edit_profile" />
                     <input name="submit" type="submit" value="{$lang.confirm_edit}" class="bnt_blue_1" style="border:none;" />
@@ -124,6 +124,64 @@ window.pageConfig={
     </form>
      <!--{/if}-->
      <!--#用户信息界面 end-->
+
+
+     <!-- 用户信息界面 start-->
+         <!--{if $action eq 'vip'}-->
+      <h5><span>加入vip</span></h5>
+      <div class="blank"></div>
+
+     <form name="formPassword" action="flow.php?step=vip_done" method="post"  >
+     <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd">
+     <tr>
+          <td colspan="3" align="center" bgcolor="#FFFFFF">
+            会员价格：{$vip.price}元
+
+          </td>
+
+        </tr>
+        <tr>
+          <td width="33%" align="left" bgcolor="#FFFFFF">序号 </td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> 成员</td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> 金额</td>
+        </tr>
+        <tr>
+          <td width="33%" align="left" bgcolor="#FFFFFF">1 </td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> 成员1</td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> {$vip.type1}</td>
+        </tr>
+        <tr>
+          <td width="33%" align="left" bgcolor="#FFFFFF">2 </td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> 成员2</td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> {$vip.type2}</td>
+        </tr>
+        <tr>
+          <td width="33%" align="left" bgcolor="#FFFFFF">3 </td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> 成员3</td>
+          <td width="33%" align="left" bgcolor="#FFFFFF"> {$vip.type3}</td>
+        </tr>
+        
+        <tr>
+       
+          <td colspan="3" align="center" bgcolor="#FFFFFF"><input type="checkbox" checked="checked" />我已经阅读并同意《vip协议》
+
+          </td>
+
+        </tr>
+        <tr>
+        <input type="hidden" value="{$vip.price}" name='amount'/>
+          <td colspan="3" align="center" bgcolor="#FFFFFF">
+            <input name="submit" type="submit" class="bnt_blue_1" style="border:none;" value="加入会员" />
+
+          </td>
+
+        </tr>
+      </table>
+    </form>
+     <!--{/if}-->
+
+
+
      <!-- {if $action eq 'bonus'} 用户的红包列表 start-->
       <script type="text/javascript">
         {foreach from=$lang.profile_js item=item key=key}

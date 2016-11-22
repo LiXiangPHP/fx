@@ -153,7 +153,45 @@ function order_paid($log_id, $pay_status = PS_PAYED, $note = '')
             $sql = 'UPDATE ' . $GLOBALS['ecs']->table('pay_log') .
                     " SET is_paid = '1' WHERE log_id = '$log_id'";
             $GLOBALS['db']->query($sql);
+            if($pay_log['order_type'] == 99)
+            {
+                $sql = 'SELECT *  ' .
+                        'FROM ' . $GLOBALS['ecs']->table('users') .
+                       " WHERE user_id = '$pay_log[order_id]'";
+                $parent1    = $GLOBALS['db']->getRow($sql);
+                //1级
+                $sql1 = 'SELECT * ' .
+                        'FROM ' . $GLOBALS['ecs']->table('users') .
+                       " WHERE user_id = '$parent1[parent_id]'";
+                $parent1_info    = $GLOBALS['db']->getRow($sql1);
+                if($parent1_info['is_vip'] == 1)
+                {
+                    //增加佣金 增加日志
+                }
+                //二级
+                $sql2 = 'SELECT * ' .
+                        'FROM ' . $GLOBALS['ecs']->table('users') .
+                       " WHERE user_id = '$parent1_info[parent_id]'";
+                $parent2_info    = $GLOBALS['db']->getRow($sql2);
+                if($parent2_info['is_vip'] == 1)
+                {
+                    //增加佣金 增加日志
+                }
+                //三级
+                $sql3 = 'SELECT * ' .
+                        'FROM ' . $GLOBALS['ecs']->table('users') .
+                       " WHERE user_id = '$parent2_info[parent_id]'";
+                $parent3_info    = $GLOBALS['db']->getRow($sql3);
+                if($parent3_info['is_vip'] == 1)
+                {
+                    //增加佣金 增加日志
+                }
+                //修改会员vip
+                 $sql4 = 'UPDATE ' . $GLOBALS['ecs']->table('users') .
+                            " SET is_vip = '1' WHERE order_id = '$order_id'";
+                $GLOBALS['db']->query($sql);
 
+            }
             /* 根据记录类型做相应处理 */
             if ($pay_log['order_type'] == PAY_ORDER)
             {

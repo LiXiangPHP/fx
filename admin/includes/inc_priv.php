@@ -66,6 +66,7 @@ if (!defined('IN_ECS'))
     $purview['06_list_integrate']    = 'integrate_users';
     $purview['08_unreply_msg']       = 'feedback_priv';
     $purview['10_user_account_manage'] = 'account_manage';
+    $purview['11_user_vip']       = 'user_vip'; //热门促销
 
 //权限管理
     $purview['admin_logs']           = array('logs_manage', 'logs_drop');

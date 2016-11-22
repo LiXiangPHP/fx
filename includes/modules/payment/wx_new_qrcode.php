@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * ECSHOP微信新版JSAPI支付插件
  */
@@ -92,7 +92,7 @@ class wx_new_qrcode
         $unifiedOrderResult = $unifiedOrder->getResult();
 
         $html = '<button type="button" onclick="javascript:alert(\'出错了\')">微信支付</button>';
-
+        
         if($unifiedOrderResult["code_url"] != NULL)
         {
             $code_url = $unifiedOrderResult["code_url"];
@@ -107,6 +107,36 @@ class wx_new_qrcode
 
         return $html;
 	}
+    function get_code1($order, $payment)
+    {
+
+        $unifiedOrder = new UnifiedOrder_pub();
+
+        $unifiedOrder->setParameter("body",'充值vip');//商品描述
+        $out_trade_no = $order['log_id'];
+        $unifiedOrder->setParameter("out_trade_no","$out_trade_no");//商户订单号 
+        $unifiedOrder->setParameter("attach",strval($order['log_id']));//商户支付日志
+        $unifiedOrder->setParameter("total_fee",strval(intval($order['order_amount']*100)));//总金额
+        $unifiedOrder->setParameter("notify_url",WXNOTIFY_URL);//通知地址 
+        $unifiedOrder->setParameter("trade_type","NATIVE");//交易类型
+
+        $unifiedOrderResult = $unifiedOrder->getResult();
+
+        $html = '<button type="button" onclick="javascript:alert(\'出错了\')">微信支付</button>';
+        
+        if($unifiedOrderResult["code_url"] != NULL)
+        {
+            $code_url = $unifiedOrderResult["code_url"];
+            $html = '<div class="wx_qrcode" style="text-align:center">';
+            $html .= $this->getcode($code_url);
+            $html .= "</div>";
+
+            $html .= "<div style=\"text-align:center\">支付后点击<a href=\"user.php?act=order_list\">此处</a>查看我的订单</div>";
+        }
+        
+        
+        return $html;
+    }
     function respond()
     {
         $payment  = get_payment('wx_new_qrcode');

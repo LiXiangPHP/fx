@@ -320,6 +320,17 @@ function check_password( password )
         document.getElementById('password_notice').innerHTML = msg_can_rg;
     }
 }
+function check_password2( password )
+{
+    if ( password.length < 6 )
+    {
+        document.getElementById('password_notice2').innerHTML = '二级密码不能少于 6 个字符';
+    }
+    else
+    {
+        document.getElementById('password_notice2').innerHTML = msg_can_rg;
+    }
+}
 
 function check_conform_password( conform_password )
 {
@@ -339,6 +350,25 @@ function check_conform_password( conform_password )
         document.getElementById('conform_password_notice').innerHTML = msg_can_rg;
     }
 }
+function check_conform_password2( conform_password )
+{
+    password = document.getElementById('password2').value;
+    
+    if ( conform_password.length < 6 )
+    {
+        document.getElementById('conform_password_notice2').innerHTML = '二级密码不能少于 6 个字符';
+        return false;
+    }
+    if ( conform_password != password )
+    {
+        document.getElementById('conform_password_notice2').innerHTML = confirm_password_invalid;
+    }
+    else
+    {
+        document.getElementById('conform_password_notice2').innerHTML = msg_can_rg;
+    }
+}
+
 
 function is_registered( username )
 {
@@ -454,19 +484,13 @@ function check_email_callback(result)
  */
 function register()
 {
-  var frm  = document.forms['formUser'];
-  var username  = Utils.trim(frm.elements['username'].value);
-  var email  = frm.elements['email'].value;
-  var password  = Utils.trim(frm.elements['password'].value);
-  var confirm_password = Utils.trim(frm.elements['confirm_password'].value);
-  var checked_agreement = frm.elements['agreement'].checked;
-  var msn = frm.elements['extend_field1'] ? Utils.trim(frm.elements['extend_field1'].value) : '';
-  var qq = frm.elements['extend_field2'] ? Utils.trim(frm.elements['extend_field2'].value) : '';
-  var home_phone = frm.elements['extend_field4'] ? Utils.trim(frm.elements['extend_field4'].value) : '';
-  var office_phone = frm.elements['extend_field3'] ? Utils.trim(frm.elements['extend_field3'].value) : '';
-  var mobile_phone = frm.elements['extend_field5'] ? Utils.trim(frm.elements['extend_field5'].value) : '';
-  var passwd_answer = frm.elements['passwd_answer'] ? Utils.trim(frm.elements['passwd_answer'].value) : '';
-  var sel_question =  frm.elements['sel_question'] ? Utils.trim(frm.elements['sel_question'].value) : '';
+  var username  =document.getElementById('username').value;
+  var password  =document.getElementById('password1').value;
+  var realname  =document.getElementById('realname').value;
+  var password2  =document.getElementById('password2').value;
+  var confirm_password  =document.getElementById('conform_password').value;
+  var confirm_password2  =document.getElementById('confirm_password2').value;
+  var agreement  =document.getElementById('agreement').value;
 
 
   var msg = "";
@@ -474,7 +498,7 @@ function register()
   var msg = '';
   if (username.length == 0)
   {
-    msg += username_empty + '\n';
+    msg += '-用户名不能为空' + '\n';
   }
   else if (username.match(/^\s*$|^c:\\con\\con$|[%,\'\*\"\s\t\<\>\&\\]/))
   {
@@ -485,25 +509,22 @@ function register()
     //msg += username_shorter + '\n';
   }
 
-  if (email.length == 0)
-  {
-    msg += email_empty + '\n';
-  }
-  else
-  {
-    if ( ! (Utils.isEmail(email)))
-    {
-      msg += email_invalid + '\n';
-    }
-  }
+
   if (password.length == 0)
   {
     msg += password_empty + '\n';
-  }
-  else if (password.length < 6)
+  }else if (password.length < 6)
   {
     msg += password_shorter + '\n';
   }
+    if (password2.length == 0)
+  {
+    msg += '-二级密码不能为空' + '\n';
+  }else if (password2.length < 6)
+  {
+    msg += '-二级密码不能少于 6 个字符' + '\n';
+  }
+
   if (/ /.test(password) == true)
   {
 	msg += passwd_balnk + '\n';
@@ -512,59 +533,13 @@ function register()
   {
     msg += confirm_password_invalid + '\n';
   }
-  if(checked_agreement != true)
+  if (confirm_password2 != password2 )
+  {
+    msg += confirm_password_invalid + '\n';
+  }
+  if(agreement != true)
   {
     msg += agreement + '\n';
-  }
-
-  if (msn.length > 0 && (!Utils.isEmail(msn)))
-  {
-    msg += msn_invalid + '\n';
-  }
-
-  if (qq.length > 0 && (!Utils.isNumber(qq)))
-  {
-    msg += qq_invalid + '\n';
-  }
-
-  if (office_phone.length>0)
-  {
-    var reg = /^[\d|\-|\s]+$/;
-    if (!reg.test(office_phone))
-    {
-      msg += office_phone_invalid + '\n';
-    }
-  }
-  if (home_phone.length>0)
-  {
-    var reg = /^[\d|\-|\s]+$/;
-
-    if (!reg.test(home_phone))
-    {
-      msg += home_phone_invalid + '\n';
-    }
-  }
-  if (mobile_phone.length>0)
-  {
-    var reg = /^[\d|\-|\s]+$/;
-    if (!reg.test(mobile_phone))
-    {
-      msg += mobile_phone_invalid + '\n';
-    }
-  }
-  if (passwd_answer.length > 0 && sel_question == 0 || document.getElementById('passwd_quesetion') && passwd_answer.length == 0)
-  {
-    msg += no_select_question + '\n';
-  }
-
-  for (i = 4; i < frm.elements.length - 4; i++)	// 从第五项开始循环检查是否为必填项
-  {
-	needinput = document.getElementById(frm.elements[i].name + 'i') ? document.getElementById(frm.elements[i].name + 'i') : '';
-
-	if (needinput != '' && frm.elements[i].value.length == 0)
-	{
-	  msg += '- ' + needinput.innerHTML + msg_blank + '\n';
-	}
   }
 
   if (msg.length > 0)

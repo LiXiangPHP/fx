@@ -35,7 +35,7 @@ array('login','act_login','register','act_register','act_edit_password','get_pas
 /* 显示页面的action列表 */
 $ui_arr = array('register', 'login', 'profile', 'order_list', 'order_detail', 'address_list', 'collection_list',
 'message_list', 'tag_list', 'get_password', 'reset_password', 'booking_list', 'add_booking', 'account_raply',
-'account_deposit', 'account_log', 'account_detail', 'act_account', 'pay', 'default', 'bonus', 'group_buy', 'group_buy_detail', 'affiliate', 'comment_list','validate_email','track_packages', 'transform_points','qpassword_name', 'get_passwd_question', 'check_answer' , 'face');
+'account_deposit', 'account_log', 'account_detail', 'act_account', 'pay', 'default', 'bonus', 'group_buy', 'group_buy_detail', 'affiliate', 'comment_list','validate_email','track_packages', 'transform_points','qpassword_name', 'get_passwd_question', 'check_answer' , 'face','vip');
 
 /* 未登录处理 */
 if (empty($_SESSION['user_id']))
@@ -103,7 +103,21 @@ if ($action == 'default')
             $smarty->assign('next_rank_name', sprintf($_LANG['next_level'], $rank['next_rank'] ,$rank['next_rank_name']));
         }
     }
-    $smarty->assign('info',        get_user_default($user_id));
+    $info = get_user_default($user_id);
+    if($info['is_vip'] == 1)
+    {
+        include 'phpqrcode.php';    
+        $value = $_SERVER['HTTP_HOST']."/user.php?act=register&pid=".$_SESSION['user_id']; //二维码内容   
+        $errorCorrectionLevel = 'L';//容错级别   
+        $matrixPointSize = 6;//生成图片大小   
+        //生成二维码图片   
+        QRcode::png($value, "./upload/qrcode/".$_SESSION['user_id'].".png", $errorCorrectionLevel, $matrixPointSize, 2);
+        $img = "<img src='./upload/qrcode/".$_SESSION['user_id'].".png'>";
+         $smarty->assign('img',        $img);
+    }
+      
+
+    $smarty->assign('info',        $info);
     $smarty->assign('user_notice', $_CFG['user_notice']);
     $smarty->assign('prompt',      get_user_prompt($user_id));
     $smarty->display('user_clips.dwt');
@@ -155,6 +169,9 @@ if ($action == 'register')
         $smarty->assign('rand',            mt_rand());
     }
 
+        /* 取得国家列表、商店所在国家、商店所在国家的省列表 */
+    $smarty->assign('country_list',       get_regions());
+    $smarty->assign('shop_province_list', get_regions(1, $_CFG['shop_country']));
     /* 密码提示问题 */
     $smarty->assign('passwd_questions', $_LANG['passwd_questions']);
 
@@ -175,20 +192,29 @@ elseif ($action == 'act_register')
         $smarty->display('user_passport.dwt');
     }
     else
-    {
+    {   
+        // print_r($_POST);die;
         include_once(ROOT_PATH . 'includes/lib_passport.php');
 
         $username = isset($_POST['username']) ? trim($_POST['username']) : '';
         $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+        $password2 = isset($_POST['password2']) ? trim($_POST['password2']) : '';
         $email    = isset($_POST['email']) ? trim($_POST['email']) : '';
         $other['msn'] = isset($_POST['extend_field1']) ? $_POST['extend_field1'] : '';
         $other['qq'] = isset($_POST['extend_field2']) ? $_POST['extend_field2'] : '';
         $other['office_phone'] = isset($_POST['extend_field3']) ? $_POST['extend_field3'] : '';
         $other['home_phone'] = isset($_POST['extend_field4']) ? $_POST['extend_field4'] : '';
-        $other['mobile_phone'] = isset($_POST['extend_field5']) ? $_POST['extend_field5'] : '';
+        $other['mobile_phone'] = isset($_POST['username']) ? $_POST['username'] : '';
+        $other['Field_realname'] = isset($_POST['realname']) ? $_POST['realname'] : '';
+        $other['paypwd'] = isset($_POST['password2']) ? $_POST['password2'] : '';
+        $other['tuijian'] = isset($_POST['tuijian']) ? $_POST['tuijian'] : '';
+        $other['Field_city1'] = isset($_POST['province']) ? $_POST['province'] : '';
+        $other['Field_city2'] = isset($_POST['city']) ? $_POST['city'] : '';
+        $other['categoryID'] = isset($_POST['district']) ? $_POST['district'] : '';
         $sel_question = empty($_POST['sel_question']) ? '' : compile_str($_POST['sel_question']);
         $passwd_answer = isset($_POST['passwd_answer']) ? compile_str(trim($_POST['passwd_answer'])) : '';
 
+        $usertype = isset($_POST['usertype']) ? $_POST['usertype'] : 6;
 
         $back_act = isset($_POST['back_act']) ? trim($_POST['back_act']) : '';
 
@@ -196,9 +222,13 @@ elseif ($action == 'act_register')
         {
             show_message($_LANG['passport_js']['agreement']);
         }
-        if (strlen($username) < 3)
+        if(empty($_POST['district']))
         {
-            show_message($_LANG['passport_js']['username_shorter']);
+            show_message('请选择地区');
+        }
+        if (strlen($username) < 11)
+        {
+            show_message('请输入正确的手机号');
         }
 
         if (strlen($password) < 6)
@@ -229,7 +259,7 @@ elseif ($action == 'act_register')
             }
         }
 
-        if (register($username, $password, $email, $other) !== false)
+        if (register($username, $password, $email, $other,$usertype) !== false)
         {
             /*把新注册用户的扩展信息插入数据库*/
             $sql = 'SELECT id FROM ' . $ecs->table('reg_fields') . ' WHERE type = 0 AND display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
@@ -699,7 +729,14 @@ elseif ($action == 'profile')
     $smarty->assign('profile', $user_info);
     $smarty->display('user_transaction.dwt');
 }
+elseif($action == 'vip')
+{
+    $sql = 'SELECT * FROM ' . $ecs->table('vip_set') ;   //读出所有扩展字段的id
+    $vip = $db->getAll($sql);
+    $smarty->assign('vip', $vip[0]);
 
+    $smarty->display('user_transaction.dwt');
+}
 
 
 

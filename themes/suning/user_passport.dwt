@@ -11,7 +11,7 @@
 <link rel="icon" href="animated_favicon.gif" type="image/gif" />
 <link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
 {* 包含脚本文件 *}
-{insert_scripts files='common.js,user.js,transport.js'}
+{insert_scripts files='common.js,user.js,transport.js,region.js'}
 </head>
 <body class="flow_page">
 <!-- #BeginLibraryItem "/library/page_header_flow.lbi" --><!-- #EndLibraryItem -->
@@ -99,19 +99,21 @@
 <div class="usBox_in ">
 <h2>填写注册信息<em>(*均为必填)</em></h2>
     <form  action="user.php" method="post" name="formUser" onsubmit="return register();" style="background:none"> 
+    <input type="hidden" value="{$usertype}" name='usertype'/>
       <table width="100%"  border="0" align="left" cellpadding="5" cellspacing="3" style="background:none">
         <tr>
-          <td width="8%" align="right">手机号：</td>
-          <td width="92%">
+          <td width="10%" align="right">手机号：</td>
+          <td width="90%">
           <input name="username" type="text" size="25" id="username" onblur="is_registered(this.value);" class="inputBg"/>
             <span id="username_notice" style="color:#FF0000"> *</span>
           </td>
         </tr>
+
         <tr>
-          <td align="right">验证码：</td>
+          <td align="right">真实姓名：</td>
           <td>
-          <input name="email" type="text" size="25" id="email"   class="inputBg" style="width:150px;" />
-          <input  type="button" value="发送验证码" onclick="sms()" style="width:90px;" />
+          <input name="realname" type="text" size="25" id="realname"   class="inputBg" />
+            <span style="color:#FF0000" id=""> *</span>
           </td>
         </tr>
         <tr>
@@ -140,6 +142,59 @@
             <span style="color:#FF0000" id="conform_password_notice"> *</span>
           </td>
         </tr>
+
+        <tr>
+          <td align="right">二级密码：</td>
+          <td>
+          <input name="password2" type="password" id="password2" onblur="check_password2(this.value);"  class="inputBg" />
+            <span style="color:#FF0000" id="password_notice2"> *</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td align="right">确认二级密码：</td>
+          <td>
+          <input name="confirm_password2" type="password" id="confirm_password2" onblur="check_conform_password2(this.value);"  class="inputBg" />
+            <span style="color:#FF0000" id="conform_password_notice2"> *</span>
+          </td>
+        </tr>
+
+
+
+        <tr>
+          <td align="right">推荐人手机号：</td>
+          <td>
+          <input name="tuijian" type="text" id=""   class="inputBg" />
+          </td>
+        </tr>
+        <tr>
+                  <td align="right" bgcolor="#ffffff">{$lang.country_province}：</td>
+                  <td colspan="3" align="left" bgcolor="#ffffff"><select name="country" id="selCountries_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$sn}')">
+                      <option value="0">{$lang.please_select}{$name_of_region[0]}</option>
+                      <!-- {foreach from=$country_list item=country} -->
+                      <option value="{$country.region_id}" {if $consignee.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                      <!-- {/foreach} -->
+                    </select>
+                    <select name="province" id="selProvinces_{$sn}" onchange="region.changed(this, 2, 'selCities_{$sn}')">
+                      <option value="0">{$lang.please_select}{$name_of_region[1]}</option>
+                      <!-- {foreach from=$province_list.$sn item=province} -->
+                      <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                      <!-- {/foreach} -->
+                    </select>
+                    <select name="city" id="selCities_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$sn}')">
+                      <option value="0">{$lang.please_select}{$name_of_region[2]}</option>
+                      <!-- {foreach from=$city_list.$sn item=city} -->
+                      <option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                      <!-- {/foreach} -->
+                    </select>
+                    <select name="district" id="selDistricts_{$sn}" {if !$district_list.$sn}style="display:none"{/if}>
+                      <option value="0">{$lang.please_select}{$name_of_region[3]}</option>
+                      <!-- {foreach from=$district_list.$sn item=district} -->
+                      <option value="{$district.region_id}"  {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                      <!-- {/foreach} -->
+                    </select>
+                  <span style="color:#FF0000" id=""> *</span> </td>
+                </tr>
         <!-- {foreach from=$extend_info_list item=field} -->
 	<!-- {if $field.id eq 6} -->
         <tr>
@@ -180,7 +235,7 @@
         <tr>
           <td>&nbsp;</td>
           <td><label>
-            <input name="agreement" type="checkbox" value="1" checked="checked" />
+            <input name="agreement" id='agreement' type="checkbox" value="1" checked="checked" />
             {$lang.agreement}</label></td>
         </tr>
         <tr>

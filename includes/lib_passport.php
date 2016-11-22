@@ -29,7 +29,7 @@ if (!defined('IN_ECS'))
  *
  * @return  bool         $bool
  */
-function register($username, $password, $email, $other = array())
+function register($username, $password, $email, $other = array(),$usertype='6')
 {
     /* 检查注册是否关闭 */
     if (!empty($GLOBALS['_CFG']['shop_reg_closed']))
@@ -49,18 +49,18 @@ function register($username, $password, $email, $other = array())
         }
     }
 
-    /* 检查email */
-    if (empty($email))
-    {
-        $GLOBALS['err']->add($GLOBALS['_LANG']['email_empty']);
-    }
-    else
-    {
-        if (!is_email($email))
-        {
-            $GLOBALS['err']->add(sprintf($GLOBALS['_LANG']['email_invalid'], htmlspecialchars($email)));
-        }
-    }
+    // /* 检查email */
+    // if (empty($email))
+    // {
+    //     $GLOBALS['err']->add($GLOBALS['_LANG']['email_empty']);
+    // }
+    // else
+    // {
+    //     if (!is_email($email))
+    //     {
+    //         $GLOBALS['err']->add(sprintf($GLOBALS['_LANG']['email_invalid'], htmlspecialchars($email)));
+    //     }
+    // }
 
     if ($GLOBALS['err']->error_no > 0)
     {
@@ -74,7 +74,7 @@ function register($username, $password, $email, $other = array())
         return false;
     }
 
-    if (!$GLOBALS['user']->add_user($username, $password, $email))
+    if (!$GLOBALS['user']->add_user($username, $password, $email,$usertype))
     {
         if ($GLOBALS['user']->error == ERR_INVALID_USERNAME)
         {
@@ -155,9 +155,15 @@ function register($username, $password, $email, $other = array())
                 $GLOBALS['db']->query($sql);
             }
         }
+        if($other['tuijian'])
+        {
+            $up_uid = $GLOBALS['db']->getOne('SELECT user_id FROM ' . $GLOBALS['ecs']->table('users') . "WHERE user_name = '$other[tuijian]'");
+             $sql = 'UPDATE '. $GLOBALS['ecs']->table('users') . ' SET parent_id = ' . $up_uid . ' WHERE user_id = ' . $_SESSION['user_id'];
 
+            $GLOBALS['db']->query($sql);
+        }
         //定义other合法的变量数组
-        $other_key_array = array('msn', 'qq', 'office_phone', 'home_phone', 'mobile_phone');
+        $other_key_array = array('msn', 'qq', 'office_phone', 'home_phone', 'mobile_phone','Field_realname','paypwd','Field_city1','Field_city2','categoryID');
         $update_data['reg_time'] = local_strtotime(local_date('Y-m-d H:i:s'));
         if ($other)
         {

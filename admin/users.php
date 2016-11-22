@@ -94,6 +94,24 @@ if ($_REQUEST['act'] == 'list')
         $smarty->display('manager_list.htm');
     }
 }
+elseif($_REQUEST['act'] == 'vip')
+{
+
+    if($_POST['submit'])
+    {  
+        $sql="UPDATE ".$ecs->table('vip_set'). "SET price= '".$_POST['price']."',type1='".$_POST['type1']."',type2='".$_POST['type2']."',type3='".$_POST['type3']."' WHERE id=1";
+        if($db->query($sql))
+        {
+            sys_msg(sprintf('保存成功', 'user.php?act=vip'));
+        }
+    }
+    $sql = "SELECT * FROM ".$ecs->table('vip_set');
+    $qu = $db->getAll($sql);
+    $smarty->assign('ur_here',      "VIP管理");
+    $smarty->assign('vip',      $qu[0]);
+
+    $smarty->display('vip_set.htm');
+}
 elseif($_REQUEST['act'] == 'point')
 {
      $smarty->assign('ur_here',      "公司积分明细");

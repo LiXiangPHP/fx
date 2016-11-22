@@ -1181,7 +1181,6 @@ elseif ($_REQUEST['step'] == 'select_shipping')
         $result['need_insure'] = ($shipping_info['insure'] > 0 && !empty($order['need_insure'])) ? 1 : 0;
         $result['content']     = $smarty->fetch('library/order_total.lbi');
     }
-
     echo $json->encode($result);
     exit;
 }
@@ -1697,6 +1696,57 @@ elseif ($_REQUEST['step'] == 'check_integral')
     }
 
     exit;
+}
+elseif($_REQUEST['step'] == 'vip_done')
+{
+    include_once('includes/lib_clips.php');
+    include_once('includes/lib_payment.php');
+    /* 取得购物类型 */
+    $flow_type = 0;
+
+
+    /*
+     * 检查用户是否已经登录
+     * 如果用户已经登录了则检查是否有默认的收货地址
+     * 如果没有登录则跳转到登录和注册页面
+     */
+    if ($_SESSION['user_id'] == 0)
+    {
+        /* 用户没有登录且没有选定匿名购物，转向到登录页面 */
+        ecs_header("Location: flow.php?step=login\n");
+        exit;
+    }
+    $money = $_POST['amount'];
+
+    $order_id = $_SESSION['user_id'];
+    /* 插入支付日志 */
+    $log_id = insert_pay_log($order_id, $money, 99);
+    /* 取得支付信息，生成支付代码 */
+    $order['order_amount'] = $money;
+    $order['order_id'] = $order_id;
+    $order['log_id'] = $log_id;
+
+    if ($money > 0)
+    {
+        $payment = payment_info(5);
+
+        include_once('includes/modules/payment/' . $payment['pay_code'] . '.php');
+
+        $pay_obj    = new $payment['pay_code'];
+
+        $pay_online = $pay_obj->get_code1($order, unserialize_config($payment['pay_config']));
+
+        $order['pay_desc'] = $payment['pay_desc'];
+
+        $smarty->assign('pay_online', $pay_online);
+    }
+    if(!empty($order['shipping_name']))
+    {
+        $order['shipping_name']=trim(stripcslashes($order['shipping_name']));
+    }
+    /* 订单信息 */
+    $smarty->assign('order',      $order);
+    $smarty->assign('order_submit_back', sprintf($_LANG['order_submit_back'], $_LANG['back_home'], $_LANG['goto_user_center'])); // 返回提示
 }
 /*------------------------------------------------------ */
 //-- 完成所有订单操作，提交到数据库

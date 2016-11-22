@@ -90,6 +90,8 @@ $modules['08_members']['05_user_rank_list']         = 'user_rank.php?act=list';
 $modules['08_members']['08_unreply_msg']            = 'user_msg.php?act=list_all';
 $modules['08_members']['09_user_account']           = 'user_account.php?act=list';
 $modules['08_members']['10_user_account_manage']    = 'user_account_manage.php?act=list';
+$modules['08_members']['11_user_vip']    = 'users.php?act=vip';
+
 /*商户管理*/
 $modules['09_shop']['02_shop_list']             = 'users.php?act=list&usertype=1';
 $modules['09_shop']['03_shop_account']             = 'user_account.php?act=list&usertype=1';

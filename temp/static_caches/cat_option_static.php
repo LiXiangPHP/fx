@@ -864,6 +864,22 @@ $data = array (
     'id' => '128',
     'name' => '护发养发',
   ),
+  145 => 
+  array (
+    'cat_id' => '145',
+    'cat_name' => 'vip',
+    'measure_unit' => '',
+    'parent_id' => '0',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '0',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => 0,
+    'level' => 0,
+    'id' => '145',
+    'name' => 'vip',
+  ),
   1 => 
   array (
     'cat_id' => '1',
